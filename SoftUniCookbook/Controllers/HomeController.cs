@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Cookbook.Core.Constants;
+using Microsoft.AspNetCore.Mvc;
 using SoftUniCookbook.Models;
 using System.Diagnostics;
 
@@ -15,6 +16,8 @@ namespace SoftUniCookbook.Controllers
 
         public IActionResult Index()
         {
+            ViewData[MessageConstant.SuccessMessage] = "Loaded website.";
+
             return View();
         }
 
