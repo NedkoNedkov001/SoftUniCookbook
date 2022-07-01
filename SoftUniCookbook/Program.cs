@@ -1,3 +1,4 @@
+using Cookbook.Core.Constants;
 using Cookbook.ModelBinders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ builder.Services.AddControllersWithViews()
     .AddMvcOptions(options =>
     {
         options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+        options.ModelBinderProviders.Insert(1, new DateTimeModelBinderProvider(FormattingConstants.DateFormat));
     });
 
 var app = builder.Build();
