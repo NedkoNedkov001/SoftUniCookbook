@@ -2,7 +2,7 @@ using Cookbook.Core.Constants;
 using Cookbook.ModelBinders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SoftUniCookbook.Data;
+using SoftUniCookbook.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
