@@ -12629,8 +12629,8 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 }
 
 .user-panel img {
-  height: auto;
-  width: 2.1rem;
+  height: 1.5rem;
+  width: 1.5rem;
 }
 
 .user-panel .info {
@@ -44507,6 +44507,7 @@ select.form-control-sm ~ .select2-container--default .select2-selection--multipl
 
 .img-circle {
   border-radius: 50%;
+  height: 2rem;
 }
 
 .img-size-64,
