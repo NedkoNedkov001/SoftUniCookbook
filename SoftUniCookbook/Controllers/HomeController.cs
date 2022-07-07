@@ -1,11 +1,12 @@
-﻿using Cookbook.Core.Constants;
+﻿using Cookbook.Controllers;
+using Cookbook.Core.Constants;
 using Microsoft.AspNetCore.Mvc;
 using SoftUniCookbook.Models;
 using System.Diagnostics;
 
 namespace SoftUniCookbook.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
 
