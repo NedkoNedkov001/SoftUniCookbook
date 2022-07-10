@@ -4397,7 +4397,8 @@ input[type="button"].btn-block {
   align-items: center;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem;
+  padding-bottom: 0px;
 }
 
 .navbar .container,
@@ -4434,6 +4435,7 @@ input[type="button"].btn-block {
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
+  height: 2.7rem;
 }
 
 .navbar-nav .nav-link {
@@ -10687,6 +10689,7 @@ body,
 
 .wrapper .content-wrapper {
   min-height: calc(100vh - calc(3.5rem + 1px) - calc(3.5rem + 1px));
+  background-color: antiquewhite;
 }
 
 .layout-boxed .wrapper {
@@ -12607,6 +12610,7 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 
 .user-panel {
   position: relative;
+
 }
 
 [class*="sidebar-dark"] .user-panel {
@@ -12626,6 +12630,8 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 .user-panel .image {
   display: inline-block;
   padding-left: 0.8rem;
+  height: 2.7rem;
+  padding-top: 0.4rem;
 }
 
 .user-panel img {
@@ -12635,7 +12641,8 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 
 .user-panel .info {
   display: inline-block;
-  padding: 5px 5px 5px 10px;
+  padding: 7px 5px 5px 10px;
+  height: 30px;
 }
 
 .user-panel .status,
