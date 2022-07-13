@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace SoftUniCookbook.Infrastructure.Data
+namespace Cookbook.Infrastructure.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
