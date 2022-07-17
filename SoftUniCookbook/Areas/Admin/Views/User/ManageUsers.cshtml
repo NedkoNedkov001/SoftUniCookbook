@@ -1,0 +1,94 @@
+﻿@using Cookbook.Core.Models
+@model IEnumerable<UserListViewModel>
+@{
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Users</h3>
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search" data-np-checked="1">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Phone number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>
+                                <li class="list-inline-item">
+                                    <img alt="Avatar" width=30rem class="table-avatar" src="data:image;base64,@System.Convert.ToBase64String(user.Picture)">
+                                </li>
+
+                            </td>
+                            <td>
+                                <a>
+                                    @user.Username
+                                </a>
+                                <br>
+                            </td>
+                            <td>
+                                <a>
+                                    @user.Email
+                                </a>
+                            </td>
+                            <td>
+                                <a>
+                                    @if (user.PhoneNumber != null)
+                                    {
+                                        @user.PhoneNumber
+                                    }
+                                    else
+                                    {
+                                        <a>-</a>
+                                    }
+                                </a>
+                            </td>
+                            <td class="project-actions text-right">
+                                <a class="btn btn-primary btn-sm" asp-area="admin" asp-action="roles" asp-controller="user" asp-route-id="@user.Id">
+                                    <i class="fas fa-folder">
+                                    </i>
+                                    Roles
+                                </a>
+                                <a class="btn btn-info btn-sm" asp-area="admin" asp-action="edit" asp-controller="user" asp-route-id="@user.Id">
+                                    <i class="fas fa-pencil-alt">
+                                    </i>
+                                    Edit
+                                </a>
+                                <a class="btn btn-danger btn-sm" asp-area="admin" asp-action="delete" asp-controller="user" asp-route-id="@user.Id" >
+                                    <i class="fas fa-trash">
+                                    </i>
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
