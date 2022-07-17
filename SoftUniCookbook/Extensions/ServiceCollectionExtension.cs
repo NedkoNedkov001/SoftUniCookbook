@@ -1,4 +1,6 @@
-﻿using Cookbook.Infrastructure.Data;
+﻿using Cookbook.Core.Contracts;
+using Cookbook.Core.Services;
+using Cookbook.Infrastructure.Data;
 using Cookbook.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IApplicationDbRepository, ApplicationDbRepository>();
-
+            services.AddScoped<IUserService, UserService>();
             return services;
         }
 
