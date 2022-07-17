@@ -17,7 +17,7 @@ namespace Cookbook.Infrastructure.Data.Models
             SentMessages = new HashSet<UserMessage>();
             ReceivedMessages = new HashSet<UserMessage>();
         }
-        public byte[] picture { get; set; }
+        public byte[] Picture { get; set; }
 
         public ICollection<UserFavorite> Favorites { get; set; }
 
