@@ -1,0 +1,49 @@
+﻿@using Cookbook.Core.Models
+@model UserEditViewModel
+@{
+    ViewData["Title"] = "Edit user";
+}
+
+<div class="card card-primary">
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <b class="h1">Edit user</b>
+        </div>
+        <div class="card-body">
+            <form id="editForm" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-floating">
+                    <div class="form-floating">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" aria-required="true" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                        
+                    </div>
+                </div>
+                <div class="form-floating">
+                    <div class="form-floating">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" aria-required="true" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-floating">
+                    <div class="form-floating">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" aria-required="true" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="col-4">
+                    <button id="editSubmit" type="submit" class="btn btn-primary btn-block">Edit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

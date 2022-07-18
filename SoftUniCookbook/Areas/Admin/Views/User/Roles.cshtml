@@ -1,0 +1,41 @@
+﻿@using Cookbook.Core.Models
+@model UserRolesViewModel
+@{
+    ViewData["Title"] = "Manage roles";
+}
+
+<div class="card card-outline card-primary">
+    <div class="card-header text-center">
+        <b class="h1">Edit roles</b>
+    </div>
+    <div class="card-body">
+        <form id="roles" method="post">
+            <input type="hidden" name="Id" value="@Model.UserId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <div class="form-floating">
+                    <h3>User: @Html.DisplayFor(m => m.Username)</h3>
+                </div>
+                <div class="form-floating">
+                    <div class="form-group">
+                        <label>User roles</label>
+                        <select asp-for="RoleIds" multiple="" class="form-control">
+                            @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.RoleItems)
+                            {
+                                <option value="@item.Value" >@item.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <button id="editSubmit" type="submit" class="btn btn-primary btn-block">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

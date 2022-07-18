@@ -1,9 +1,10 @@
 ﻿using Cookbook.Core.Constants;
 using Cookbook.Core.Contracts;
+using Cookbook.Core.Models;
 using Cookbook.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Cookbook.Areas.Admin.Controllers
 {
@@ -36,17 +37,65 @@ namespace Cookbook.Areas.Admin.Controllers
 
         public async Task<IActionResult> Roles(string id)
         {
-            return Ok(id);
+            var user = await userService.GetUserById(id);
+            var model = new UserRolesViewModel()
+            {
+                UserId = user.Id,
+                Username = user.UserName
+            };
+
+            ViewBag.RoleItems = roleManager.Roles
+                .ToList()
+                .Select(r => new SelectListItem()
+                {
+                    Text = r.Name,
+                    Value = r.Name,
+                    Selected = userManager.IsInRoleAsync(user, r.Name).Result
+                });
+
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(string id)
         {
-            return Ok(id);
+            var model = await userService.GetUserForEditById(id);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var errors = await userService.UpdateUser(model);
+
+            if (errors.Count() == 0)
+            {
+                ViewData[MessageConstant.SuccessMessage] = "User edited successfully!";
+            }
+            else
+            {
+                ViewData[MessageConstant.ErrorMessage] = errors;
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> Delete(string id)
         {
-            return Ok();
+            if (await userService.DeleteUser(id))
+            {
+                ViewData[MessageConstant.SuccessMessage] = "User deleted successfully!";
+            }
+            else
+            {
+                ViewData[MessageConstant.ErrorMessage] = new List<string> { "Could not delete user." };
+            }
+            return Redirect("/Admin/User/ManageUsers"); // TODO: Refresh page and show toastr
         }
 
 
@@ -56,6 +105,11 @@ namespace Cookbook.Areas.Admin.Controllers
             //await roleManager.CreateAsync(new IdentityRole()
             //{
             //    Name = "Administrator",
+            //});
+
+            //await roleManager.CreateAsync(new IdentityRole()
+            //{
+            //    Name = "Moderator",
             //});
 
             return Ok();
