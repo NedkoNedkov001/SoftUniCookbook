@@ -16,8 +16,11 @@ namespace Cookbook.Infrastructure.Data.Models
             Cart = new HashSet<UserIngredient>();
             SentMessages = new HashSet<UserMessage>();
             ReceivedMessages = new HashSet<UserMessage>();
+            IsDeleted = false;
         }
         public byte[] Picture { get; set; }
+
+        public bool IsDeleted { get; set; }
 
         public ICollection<UserFavorite> Favorites { get; set; }
 
