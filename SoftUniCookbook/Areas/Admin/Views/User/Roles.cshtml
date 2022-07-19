@@ -2,6 +2,7 @@
 @model UserRolesViewModel
 @{
     ViewData["Title"] = "Manage roles";
+    var items = (List<SelectListItem>)ViewBag.RoleItems;
 }
 
 <div class="card card-outline card-primary">
@@ -10,32 +11,27 @@
     </div>
     <div class="card-body">
         <form id="roles" method="post">
-            <input type="hidden" name="Id" value="@Model.UserId" />
+            <input type="hidden" name="UserId" value="@Model.UserId" />
+            <input type="hidden" name="Name" value="@Model.Username" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating">
-                <div class="form-floating">
-                    <h3>User: @Html.DisplayFor(m => m.Username)</h3>
-                </div>
-                <div class="form-floating">
-                    <div class="form-group">
-                        <label>User roles</label>
-                        <select asp-for="RoleIds" multiple="" class="form-control">
-                            @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.RoleItems)
-                            {
-                                <option value="@item.Value" >@item.Text</option>
-                            }
-                        </select>
-                    </div>
+                <h3>User: @Html.DisplayFor(m => m.Username)</h3>
+            </div>
+            <div class="form-floating">
+                <div class="form-group">
+                    <label>User Roles</label>
+                    <select asp-for="RoleNames" asp-items="@items" class="form-control">
+                       
+                    </select>
                 </div>
             </div>
-            <div class="col-4">
-                <button id="editSubmit" type="submit" class="btn btn-primary btn-block">Save</button>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-4">
+                    <button id="login-submit" type="submit" class="btn btn-primary btn-block">Submit</button>
+                </div>
+                <!-- /.col -->
             </div>
         </form>
     </div>
 </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
+
 namespace Cookbook.Areas.Admin.Controllers
 {
     public class UserController : BaseController
@@ -44,6 +45,7 @@ namespace Cookbook.Areas.Admin.Controllers
                 Username = user.UserName
             };
 
+
             ViewBag.RoleItems = roleManager.Roles
                 .ToList()
                 .Select(r => new SelectListItem()
@@ -51,10 +53,27 @@ namespace Cookbook.Areas.Admin.Controllers
                     Text = r.Name,
                     Value = r.Name,
                     Selected = userManager.IsInRoleAsync(user, r.Name).Result
-                });
+                }).ToList();
 
             return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Roles(UserRolesViewModel model)
+        {
+            var user = await userService.GetUserById(model.UserId);
+            var userRoles = await userManager.GetRolesAsync(user);
+            await userManager.RemoveFromRolesAsync(user, userRoles);
+
+            if (model.RoleNames?.Length > 0)
+            {
+                await userManager.AddToRolesAsync(user, model.RoleNames);
+            }
+
+            return RedirectToAction(nameof(ManageUsers));
+        }
+
+
 
         public async Task<IActionResult> Edit(string id)
         {
@@ -87,15 +106,9 @@ namespace Cookbook.Areas.Admin.Controllers
 
         public async Task<IActionResult> Delete(string id)
         {
-            if (await userService.DeleteUser(id))
-            {
-                ViewData[MessageConstant.SuccessMessage] = "User deleted successfully!";
-            }
-            else
-            {
-                ViewData[MessageConstant.ErrorMessage] = new List<string> { "Could not delete user." };
-            }
-            return Redirect("/Admin/User/ManageUsers"); // TODO: Refresh page and show toastr
+            await userService.DeleteUser(id);
+
+            return RedirectToAction(nameof(ManageUsers));
         }
 
 
@@ -104,12 +117,12 @@ namespace Cookbook.Areas.Admin.Controllers
         {
             //await roleManager.CreateAsync(new IdentityRole()
             //{
-            //    Name = "Administrator",
+            //    Name = UserConstants.Roles.Moderator,
             //});
 
             //await roleManager.CreateAsync(new IdentityRole()
             //{
-            //    Name = "Moderator",
+            //    Name = UserConstants.Roles.Administrator
             //});
 
             return Ok();

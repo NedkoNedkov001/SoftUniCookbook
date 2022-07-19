@@ -12,7 +12,7 @@ namespace Cookbook.Core.Models
 
         public string Username { get; set; }
 
-        public string[] RoleIds { get; set; }
+        public string[] RoleNames { get; set; }
 
     }
 }
