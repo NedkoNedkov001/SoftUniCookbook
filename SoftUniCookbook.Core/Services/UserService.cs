@@ -15,10 +15,12 @@ namespace Cookbook.Core.Services
     public class UserService : IUserService
     {
         private readonly IApplicationDbRepository repo;
-       
-        public UserService(IApplicationDbRepository repo)
+        private readonly IRecipeService recipeService;
+
+        public UserService(IApplicationDbRepository repo, IRecipeService recipeService)
         {
             this.repo = repo;
+            this.recipeService = recipeService;
         }
 
         public async Task<UserEditViewModel> GetUserForEditById(string id)
@@ -126,6 +128,52 @@ namespace Cookbook.Core.Services
         public async Task<ApplicationUser> GetUserById(string id)
         {
             return await repo.GetByIdAsync<ApplicationUser>(id);
+        }
+
+        public async Task<HomeUserViewModel> GetHomeUserByUsername(string username)
+        {
+            var user = await repo.All<ApplicationUser>()
+                .FirstOrDefaultAsync(u => u.NormalizedUserName == username.ToUpper());
+
+            HomeUserViewModel homeUser = new HomeUserViewModel()
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Favorites = (ICollection<UserFavorite>)GetUserFavorites(user.Id).Result
+            };
+
+            return homeUser;
+        }
+
+        private async Task<IEnumerable<UserFavorite>> GetUserFavorites(string id)
+        {
+            return await repo.All<UserFavorite>()
+                .Where(uf => uf.UserId == id)
+                .ToListAsync();
+        }
+
+        public async Task<bool> AddFavorite(string userId, string recipeId)
+        {
+            throw new NotImplementedException();
+            var user = await repo.GetByIdAsync<ApplicationUser>(userId);
+            var recipe = await recipeService.GetRecipeById(recipeId);
+
+            if (user != null && recipe != null)
+            {
+                UserFavorite userFavorite = new UserFavorite()
+                {
+                    UserId = user.Id,
+                    RecipeId = recipe.Id
+                };
+                user.Favorites.Add(userFavorite);
+                await repo.AddAsync(userFavorite);
+                //await repo.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

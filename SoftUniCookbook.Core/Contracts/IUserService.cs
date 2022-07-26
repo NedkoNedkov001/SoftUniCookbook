@@ -13,10 +13,12 @@ namespace Cookbook.Core.Contracts
     {
         Task<IEnumerable<UserListViewModel>> GetUsers();
         Task<ApplicationUser> GetUserById(string id);
+        Task<HomeUserViewModel> GetHomeUserByUsername(string username);
         Task<UserEditViewModel> GetUserForEditById(string id);
         Task<UserViewModel> GetUserForViewByUsername(string username);
         Task<UserViewModel> GetUserForViewByEmail(string email);
         Task<IEnumerable<string>> UpdateUser(UserEditViewModel model);
         Task<bool> DeleteUser(string id);
+        Task<bool> AddFavorite(string userId, string recipeId);
     }
 }
