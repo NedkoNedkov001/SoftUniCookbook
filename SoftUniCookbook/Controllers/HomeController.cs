@@ -1,5 +1,7 @@
 ﻿using Cookbook.Controllers;
 using Cookbook.Core.Constants;
+using Cookbook.Core.Contracts;
+using Cookbook.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using SoftUniCookbook.Models;
 using System.Diagnostics;
@@ -9,18 +11,50 @@ namespace SoftUniCookbook.Controllers
     public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUserService userService;
+        private readonly IRecipeService recipeService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IUserService userService, IRecipeService recipeService)
         {
+            this.userService = userService;
+            this.recipeService = recipeService;
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string keyword = null)
         {
-            ViewData[MessageConstant.SuccessMessage] = "Loaded website.";
+            var home = new HomeViewModel();
+            
+            if (keyword != null)
+            {
+                home.Recipes = await recipeService.GetFilteredRecipes(keyword);
+            }
+            else
+            {
+                home.Recipes = await recipeService.GetAllRecipes();
+            }
 
-            return View();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                home.User = await userService.GetHomeUserByUsername(User.Identity.Name);
+            }
+            else
+            {
+                home.User = null;
+            }
+
+            return View(home);
+
         }
+
+        public async Task<IActionResult> AddToFavorite(string userId, string recipeId)
+        {
+            await userService.AddFavorite(userId, recipeId);
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         public IActionResult Privacy()
         {

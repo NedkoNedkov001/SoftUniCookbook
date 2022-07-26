@@ -481,6 +481,7 @@ mark,
 .img-fluid {
   max-width: 100%;
   height: auto;
+
 }
 
 .img-thumbnail {
@@ -44514,7 +44515,7 @@ select.form-control-sm ~ .select2-container--default .select2-selection--multipl
 
 .img-circle {
   border-radius: 50%;
-  height: 2rem;
+  height: auto;
 }
 
 .img-size-64,
