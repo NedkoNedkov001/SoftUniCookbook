@@ -31,14 +31,14 @@ namespace Cookbook.Areas.Admin.Controllers
 
         public async Task<IActionResult> ManageUsers()
         {
-            var users = await userService.GetUsers();
+            var users = await userService.GetUsersAsync();
 
             return View(users);
         }
 
         public async Task<IActionResult> Roles(string id)
         {
-            var user = await userService.GetUserById(id);
+            var user = await userService.GetUserByIdAsync(id);
             var model = new UserRolesViewModel()
             {
                 UserId = user.Id,
@@ -61,7 +61,7 @@ namespace Cookbook.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Roles(UserRolesViewModel model)
         {
-            var user = await userService.GetUserById(model.UserId);
+            var user = await userService.GetUserByIdAsync(model.UserId);
             var userRoles = await userManager.GetRolesAsync(user);
             await userManager.RemoveFromRolesAsync(user, userRoles);
 
@@ -77,7 +77,7 @@ namespace Cookbook.Areas.Admin.Controllers
 
         public async Task<IActionResult> Edit(string id)
         {
-            var model = await userService.GetUserForEditById(id);
+            var model = await userService.GetUserForEditByIdAsync(id);
 
             return View(model);
         }
@@ -90,7 +90,7 @@ namespace Cookbook.Areas.Admin.Controllers
                 return View(model);
             }
 
-            var errors = await userService.UpdateUser(model);
+            var errors = await userService.UpdateUserAsync(model);
 
             if (errors.Count() == 0)
             {
@@ -106,26 +106,12 @@ namespace Cookbook.Areas.Admin.Controllers
 
         public async Task<IActionResult> Delete(string id)
         {
-            await userService.DeleteUser(id);
+            await userService.DeleteUserAsync(id);
 
             return RedirectToAction(nameof(ManageUsers));
         }
 
 
 
-        public async Task<IActionResult> CreateRole()
-        {
-            //await roleManager.CreateAsync(new IdentityRole()
-            //{
-            //    Name = UserConstants.Roles.Moderator,
-            //});
-
-            //await roleManager.CreateAsync(new IdentityRole()
-            //{
-            //    Name = UserConstants.Roles.Administrator
-            //});
-
-            return Ok();
-        }
     }
 }

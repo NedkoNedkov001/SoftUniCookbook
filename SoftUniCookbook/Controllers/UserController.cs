@@ -26,5 +26,29 @@ namespace Cookbook.Controllers
         {
             return View();
         }
+
+        //public async Task<IActionResult> CreateRole()
+        //{
+        //    await roleManager.CreateAsync(new IdentityRole()
+        //    {
+        //        Name = UserConstants.Roles.Moderator,
+        //    });
+
+        //    await roleManager.CreateAsync(new IdentityRole()
+        //    {
+        //        Name = UserConstants.Roles.Administrator
+        //    });
+
+        //    await roleManager.CreateAsync(new IdentityRole()
+        //    {
+        //        Name = UserConstants.Roles.User
+        //    });
+
+        //    var user = await userService.GetUserByUsername(User.Identity.Name);
+        //    await userManager.AddToRoleAsync(user, UserConstants.Roles.Administrator);
+
+        //    return Ok();
+        //}
+
     }
 }
