@@ -11,14 +11,17 @@ namespace Cookbook.Core.Contracts
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserListViewModel>> GetUsers();
-        Task<ApplicationUser> GetUserById(string id);
-        Task<HomeUserViewModel> GetHomeUserByUsername(string username);
-        Task<UserEditViewModel> GetUserForEditById(string id);
-        Task<UserViewModel> GetUserForViewByUsername(string username);
-        Task<UserViewModel> GetUserForViewByEmail(string email);
-        Task<IEnumerable<string>> UpdateUser(UserEditViewModel model);
-        Task<bool> DeleteUser(string id);
-        Task<bool> AddFavorite(string userId, string recipeId);
+        Task<IEnumerable<UserListViewModel>> GetUsersAsync();
+        Task<ApplicationUser> GetUserByIdAsync(string id);
+        Task<ApplicationUser> GetUserByUsernameAsync(string username);
+        Task<ApplicationUser> GetUserByEmailAsync(string email);
+        Task<HomeUserViewModel> GetHomeUserByUsernameAsync(string username);
+        Task<UserEditViewModel> GetUserForEditByIdAsync(string id);
+        Task<UserViewModel> GetUserForViewByUsernameAsync(string username);
+        Task<UserViewModel> GetUserForViewByEmailAsync(string email);
+        Task<IEnumerable<string>> UpdateUserAsync(UserEditViewModel model);
+        Task<bool> DeleteUserAsync(string id);
+        Task<IEnumerable<UserFavorite>> GetUserFavoritesAsync(string id);
+        Task<bool> AddFavoriteAsync(string userId, string recipeId);
     }
 }

@@ -20,7 +20,7 @@ namespace Cookbook.Core.Services
             this.repo = repo;
         }
 
-        public async Task<IEnumerable<RecipePreviewViewModel>> GetAllRecipes()
+        public async Task<IEnumerable<RecipePreviewViewModel>> GetAllRecipesAsync()
         {
             return await repo.All<Recipe>()
                             .Where(r => r.IsDeleted == false)
@@ -37,7 +37,7 @@ namespace Cookbook.Core.Services
                             .ToListAsync();
         }
 
-        public async Task<IEnumerable<RecipePreviewViewModel>> GetFilteredRecipes(string keyword)
+        public async Task<IEnumerable<RecipePreviewViewModel>> GetFilteredRecipesAsync(string keyword)
         {
             return await repo.All<Recipe>()
                 .Where(r => r.Name.Contains(keyword))
@@ -55,10 +55,18 @@ namespace Cookbook.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<Recipe> GetRecipeById(string recipeId)
+        public async Task<Recipe> GetRecipeByIdAsync(string recipeId)
         {
-            return await repo.All<Recipe>()
+            var recipe = await repo.All<Recipe>()
                 .FirstOrDefaultAsync(r => r.Id == Guid.Parse(recipeId));
+
+            if (recipe == null)
+            {
+                throw new ArgumentNullException($"Recipe with id '{recipeId}' does not exist");
+            }
+
+            return recipe;
+
         }
     }
 }

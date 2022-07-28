@@ -23,53 +23,7 @@ namespace Cookbook.Core.Services
             this.recipeService = recipeService;
         }
 
-        public async Task<UserEditViewModel> GetUserForEditById(string id)
-        {
-            var user = await repo.GetByIdAsync<ApplicationUser>(id);
-
-            return new UserEditViewModel()
-            {
-                Id = user.Id,
-                Username = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                //Picture = user.Picture
-            };
-        }
-
-        public async Task<UserViewModel> GetUserForViewByUsername(string username)
-        {
-            return await repo.All<ApplicationUser>()
-                .Where(u => u.UserName == username)
-                .Where(u => u.IsDeleted == false)
-                .Select(u => new UserViewModel()
-                {
-                    Id = u.Id,
-                    Username = u.UserName,
-                    Email = u.Email,
-                    PhoneNumber = u.PhoneNumber,
-                    Picture = u.Picture
-                })
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<UserViewModel> GetUserForViewByEmail(string email)
-        {
-            return await repo.All<ApplicationUser>()
-                .Where(u => u.Email == email)
-                .Where(u => u.IsDeleted == false)
-                .Select(u => new UserViewModel()
-                {
-                    Id = u.Id,
-                    Username = u.UserName,
-                    Email = u.Email,
-                    PhoneNumber = u.PhoneNumber,
-                    Picture = u.Picture
-                })
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<IEnumerable<UserListViewModel>> GetUsers()
+        public async Task<IEnumerable<UserListViewModel>> GetUsersAsync()
         {
             return await repo.All<ApplicationUser>()
                 .Where(u => u.IsDeleted == false)
@@ -84,15 +38,142 @@ namespace Cookbook.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<string>> UpdateUser(UserEditViewModel model)
+        public async Task<ApplicationUser> GetUserByUsernameAsync(string username)
+        {
+            var user = await repo.All<ApplicationUser>()
+                .FirstOrDefaultAsync(u => u.NormalizedUserName == username.ToUpper());
+
+            if (user == null)
+            {
+                throw new ArgumentNullException($"User {username} does not exist");
+            }
+
+            return user;
+        }
+        public async Task<UserViewModel> GetUserForViewByUsernameAsync(string username)
+        {
+            try
+            {
+                var user = await GetUserByUsernameAsync(username);
+                UserViewModel userView = new UserViewModel()
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Picture = user.Picture
+                };
+                return userView;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public async Task<HomeUserViewModel> GetHomeUserByUsernameAsync(string username)
+        {
+            try
+            {
+                var user = await GetUserByUsernameAsync(username);
+
+                HomeUserViewModel homeUser = new HomeUserViewModel()
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Favorites = (ICollection<UserFavorite>)GetUserFavoritesAsync(user.Id).Result
+                };
+                return homeUser;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+        public async Task<ApplicationUser> GetUserByIdAsync(string id)
+        {
+            var user = await repo.All<ApplicationUser>()
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException($"User with id '{id}' does not exist");
+            }
+
+            return user;
+        }
+
+        public async Task<UserEditViewModel> GetUserForEditByIdAsync(string id)
+        {
+            try
+            {
+                var user = await GetUserByIdAsync(id);
+
+                var editUser = new UserEditViewModel()
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    //Picture = user.Picture
+                };
+                return editUser;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
+        {
+            var user = await repo.All<ApplicationUser>()
+                .Where(u => u.NormalizedEmail == email.ToUpper())
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new ArgumentNullException($"User with email '{email}' does not exist");
+            }
+
+            return user;
+        }
+
+        public async Task<UserViewModel> GetUserForViewByEmailAsync(string email)
+        {
+            try
+            {
+                var user = await GetUserByEmailAsync(email);
+
+                var viewUser = new UserViewModel()
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Picture = user.Picture
+                };
+                return viewUser;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<string>> UpdateUserAsync(UserEditViewModel model)
         {
             var errors = new HashSet<string>();
 
-            if (await GetUserForViewByUsername(model.Username) != null && (await GetUserForViewByUsername(model.Username)).Id != model.Id)
+            if (await GetUserForViewByUsernameAsync(model.Username) != null &&
+                (await GetUserForViewByUsernameAsync(model.Username)).Id != model.Id)
             {
                 errors.Add("Username is already taken.");
             }
-            if (await GetUserForViewByEmail(model.Email) != null && (await GetUserForViewByEmail(model.Email)).Id != model.Id)
+            if (await GetUserForViewByEmailAsync(model.Email) != null &&
+                (await GetUserForViewByEmailAsync(model.Email)).Id != model.Id)
             {
                 errors.Add("Email is already taken.");
             }
@@ -116,7 +197,7 @@ namespace Cookbook.Core.Services
             return errors;
         }
 
-        public async Task<bool> DeleteUser(string id)
+        public async Task<bool> DeleteUserAsync(string id)
         {
             var user = await repo.GetByIdAsync<ApplicationUser>(id);
 
@@ -125,36 +206,16 @@ namespace Cookbook.Core.Services
             return (user != null);
         }
 
-        public async Task<ApplicationUser> GetUserById(string id)
-        {
-            return await repo.GetByIdAsync<ApplicationUser>(id);
-        }
-
-        public async Task<HomeUserViewModel> GetHomeUserByUsername(string username)
-        {
-            var user = await repo.All<ApplicationUser>()
-                .FirstOrDefaultAsync(u => u.NormalizedUserName == username.ToUpper());
-
-            HomeUserViewModel homeUser = new HomeUserViewModel()
-            {
-                Id = user.Id,
-                Username = user.UserName,
-                Favorites = (ICollection<UserFavorite>)GetUserFavorites(user.Id).Result
-            };
-
-            return homeUser;
-        }
-
-        private async Task<IEnumerable<UserFavorite>> GetUserFavorites(string id)
+        public async Task<IEnumerable<UserFavorite>> GetUserFavoritesAsync(string id)
         {
             return await repo.All<UserFavorite>()
                 .Where(uf => uf.UserId == id)
                 .ToListAsync();
         }
 
-        public async Task<bool> AddFavorite(string userId, string recipeId)
+        public async Task<bool> AddFavoriteAsync(string userId, string recipeId)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
             var user = await repo.GetByIdAsync<ApplicationUser>(userId);
             var recipe = await recipeService.GetRecipeById(recipeId);
 
@@ -167,7 +228,7 @@ namespace Cookbook.Core.Services
                 };
                 user.Favorites.Add(userFavorite);
                 await repo.AddAsync(userFavorite);
-                //await repo.SaveChangesAsync();
+                await repo.SaveChangesAsync();
                 return true;
             }
             else
@@ -175,5 +236,6 @@ namespace Cookbook.Core.Services
                 return false;
             }
         }
+
     }
 }

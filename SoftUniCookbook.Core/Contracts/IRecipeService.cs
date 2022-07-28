@@ -10,8 +10,8 @@ namespace Cookbook.Core.Contracts
 {
     public interface IRecipeService
     {
-        public Task<IEnumerable<RecipePreviewViewModel>> GetAllRecipes();
-        public Task<IEnumerable<RecipePreviewViewModel>> GetFilteredRecipes(string keyword);
-        public Task<Recipe> GetRecipeById(string recipeId);
+        public Task<IEnumerable<RecipePreviewViewModel>> GetAllRecipesAsync();
+        public Task<IEnumerable<RecipePreviewViewModel>> GetFilteredRecipesAsync(string keyword);
+        public Task<Recipe> GetRecipeByIdAsync(string recipeId);
     }
 }
