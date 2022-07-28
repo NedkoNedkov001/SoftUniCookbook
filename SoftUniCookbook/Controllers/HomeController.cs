@@ -37,7 +37,7 @@ namespace SoftUniCookbook.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-                home.User = await userService.GetHomeUserByUsername(User.Identity.Name);
+                home.User = await userService.GetHomeUserByUsernameAsync(User.Identity.Name);
             }
             else
             {
@@ -50,7 +50,7 @@ namespace SoftUniCookbook.Controllers
 
         public async Task<IActionResult> AddToFavorite(string userId, string recipeId)
         {
-            await userService.AddFavorite(userId, recipeId);
+            await userService.AddFavoriteAsync(userId, recipeId);
 
             return RedirectToAction(nameof(Index));
         }
@@ -66,5 +66,7 @@ namespace SoftUniCookbook.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }

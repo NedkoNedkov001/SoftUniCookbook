@@ -31,7 +31,7 @@ namespace Cookbook.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-                home.User = await userService.GetHomeUserByUsername(User.Identity.Name);
+                home.User = await userService.GetHomeUserByUsernameAsync(User.Identity.Name);
             }
             else
             {
