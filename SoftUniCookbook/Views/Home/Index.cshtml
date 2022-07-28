@@ -56,18 +56,22 @@
                                 </div>
                                 <div class="card-footer">
                                     <div class="text-right">
-                                        @if (Model.User.Favorites.Any(f => f.RecipeId == recipe.Id))
+                                        @if (User.Identity.IsAuthenticated)
                                         {
-                                            <a href="#" class="btn btn-sm bg-teal">
-                                                <i class="fas fa-bookmark"></i>
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <a href="#" class="btn btn-sm bg-gray">
-                                                <i class="fas fa-bookmark"></i>
-                                            </a>
 
+                                            @if (Model.User.Favorites.Any(f => f.RecipeId == recipe.Id))
+                                            {
+                                                <a href="#" class="btn btn-sm bg-teal">
+                                                    <i class="fas fa-bookmark"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="#" class="btn btn-sm bg-gray">
+                                                    <i class="fas fa-bookmark"></i>
+                                                </a>
+
+                                            }
                                         }
                                         <a class="btn btn-info btn-sm" asp-action="view" asp-controller="recipe" asp-route-id="@recipe.Id">
                                             <i class="fas fa-book-open">
@@ -75,6 +79,7 @@
                                             View
                                         </a>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
