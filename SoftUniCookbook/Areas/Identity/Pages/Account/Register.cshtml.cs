@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using Cookbook.Core.Constants;
 using Cookbook.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -134,11 +135,14 @@ namespace Cookbook.Areas.Identity.Pages.Account
                     await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                     user.Picture = ImageToByteArray("../SoftUniCookbook/wwwroot/img/AdminLTELogo.png");
                     result = await _userManager.CreateAsync(user, Input.Password);
+                    await _userManager.AddToRoleAsync(user, UserConstants.Roles.User);
                 }
 
                 if (result.Succeeded && !emailTaken)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
