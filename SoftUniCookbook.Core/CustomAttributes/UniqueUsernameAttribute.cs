@@ -22,7 +22,7 @@ namespace Cookbook.Core.CustomAttributes
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
 
-            if (userService.GetUserForViewByUsername((string)value) == null)
+            if (userService.GetUserForViewByUsernameAsync((string)value) == null)
             {
                 return ValidationResult.Success;
             }
