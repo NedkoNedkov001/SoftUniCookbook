@@ -13,7 +13,7 @@ namespace Cookbook.Core.Models
 
         public string Username { get; set; }
 
-        public ICollection<UserFavorite> Favorites { get; set; }
+        public ICollection<Recipe> Favorites { get; set; }
 
     }
 }
