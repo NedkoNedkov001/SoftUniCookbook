@@ -15,6 +15,7 @@ namespace Cookbook.Infrastructure.Data.Models
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
+
         [Required]
         [ForeignKey(nameof(Recipe))]
         public Guid RecipeId { get; set; }

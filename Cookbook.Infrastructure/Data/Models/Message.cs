@@ -15,13 +15,14 @@ namespace Cookbook.Infrastructure.Data.Models
         [Key]
         public Guid Id { get; set; }
 
-
+        [Required]
         [ForeignKey(nameof(Sender))]
-        public string? SenderId { get; set; }
+        public string SenderId { get; set; }
         public ApplicationUser Sender { get; set; }
 
+        [Required]
         [ForeignKey(nameof(Receiver))]
-        public string? ReceiverId { get; set; }
+        public string ReceiverId { get; set; }
         public ApplicationUser Receiver { get; set; }
 
         [Required]

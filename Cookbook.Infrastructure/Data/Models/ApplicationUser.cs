@@ -12,22 +12,20 @@ namespace Cookbook.Infrastructure.Data.Models
     {
         public ApplicationUser()
         {
+            Recipes = new HashSet<Recipe>();
             Favorites = new HashSet<UserFavorite>();
-            Cart = new HashSet<UserIngredient>();
-            SentMessages = new HashSet<UserMessage>();
-            ReceivedMessages = new HashSet<UserMessage>();
+            SentMessages = new HashSet<Message>();
+            ReceivedMessages = new HashSet<Message>();
             IsDeleted = false;
         }
         public byte[] Picture { get; set; }
 
         public bool IsDeleted { get; set; }
 
+
+        public ICollection<Recipe> Recipes { get; set; }
         public ICollection<UserFavorite> Favorites { get; set; }
-
-        public ICollection<UserIngredient> Cart { get; set; }
-
-        public ICollection<UserMessage> SentMessages { get; set; }
-
-        public ICollection<UserMessage> ReceivedMessages { get; set; }
+        public ICollection<Message> SentMessages { get; set; }
+        public ICollection<Message> ReceivedMessages { get; set; }
     }
 }

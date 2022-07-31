@@ -106,6 +106,9 @@ namespace SoftUniCookbook.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(300)
@@ -117,187 +120,14 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Ingredient", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Ingredients");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Recipe", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("Instructions")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<byte[]>("Picture")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte>("ServingSize")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.ToTable("Recipes");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.RecipeComment", b =>
-                {
-                    b.Property<Guid>("RecipeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CommentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("RecipeId", "CommentId");
-
-                    b.HasIndex("CommentId");
-
-                    b.ToTable("RecipesComments");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.RecipeIngredient", b =>
-                {
-                    b.Property<Guid>("RecipeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IngredientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.HasKey("RecipeId", "IngredientId");
-
-                    b.HasIndex("IngredientId");
-
-                    b.ToTable("RecipesIngredients");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.RecipeTag", b =>
-                {
-                    b.Property<Guid>("RecipeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("RecipeId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("RecipesTags");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Tag", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.UserFavorite", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("RecipeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("UserId", "RecipeId");
-
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("UsersFavorites");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments", (string)null);
                 });
 
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.UserIngredient", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("IngredientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.HasKey("UserId", "IngredientId");
-
-                    b.HasIndex("IngredientId");
-
-                    b.ToTable("UsersIngredients");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.UserMessage", b =>
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Message", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -331,7 +161,106 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("UsersMessages");
+                    b.ToTable("Messages", (string)null);
+                });
+
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Recipe", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Ingredients")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Instructions")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte[]>("Picture")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte>("ServingSize")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Recipes", (string)null);
+                });
+
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.RecipeTag", b =>
+                {
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("RecipeId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("RecipesTags", (string)null);
+                });
+
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags", (string)null);
+                });
+
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.UserFavorite", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "RecipeId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("UsersFavorites", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -473,106 +402,16 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
             modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Comment", b =>
                 {
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Recipe", b =>
-                {
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.ApplicationUser", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.RecipeComment", b =>
-                {
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.Comment", "Comment")
-                        .WithMany()
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Cookbook.Infrastructure.Data.Models.Recipe", "Recipe")
                         .WithMany("Comments")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Comment");
-
-                    b.Navigation("Recipe");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.RecipeIngredient", b =>
-                {
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.Ingredient", "Ingredient")
-                        .WithMany()
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.Recipe", "Recipe")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ingredient");
-
-                    b.Navigation("Recipe");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.RecipeTag", b =>
-                {
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.Recipe", "Recipe")
-                        .WithMany("Tags")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.Tag", "Tag")
-                        .WithMany()
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Recipe");
-
-                    b.Navigation("Tag");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Tag", b =>
-                {
                     b.HasOne("Cookbook.Infrastructure.Data.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.UserFavorite", b =>
-                {
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.Recipe", "Recipe")
-                        .WithMany()
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.ApplicationUser", "User")
-                        .WithMany("Favorites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Recipe");
@@ -580,26 +419,7 @@ namespace SoftUniCookbook.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.UserIngredient", b =>
-                {
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.Ingredient", "Ingredient")
-                        .WithMany()
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Cookbook.Infrastructure.Data.Models.ApplicationUser", "User")
-                        .WithMany("Cart")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ingredient");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.UserMessage", b =>
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Message", b =>
                 {
                     b.HasOne("Cookbook.Infrastructure.Data.Models.ApplicationUser", "Receiver")
                         .WithMany("ReceivedMessages")
@@ -616,6 +436,55 @@ namespace SoftUniCookbook.Infrastructure.Migrations
                     b.Navigation("Receiver");
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Recipe", b =>
+                {
+                    b.HasOne("Cookbook.Infrastructure.Data.Models.ApplicationUser", "Author")
+                        .WithMany("Recipes")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.RecipeTag", b =>
+                {
+                    b.HasOne("Cookbook.Infrastructure.Data.Models.Recipe", "Recipe")
+                        .WithMany("Tags")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cookbook.Infrastructure.Data.Models.Tag", "Tag")
+                        .WithMany("Recipes")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.UserFavorite", b =>
+                {
+                    b.HasOne("Cookbook.Infrastructure.Data.Models.Recipe", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cookbook.Infrastructure.Data.Models.ApplicationUser", "User")
+                        .WithMany("Favorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -671,11 +540,11 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
             modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Cart");
-
                     b.Navigation("Favorites");
 
                     b.Navigation("ReceivedMessages");
+
+                    b.Navigation("Recipes");
 
                     b.Navigation("SentMessages");
                 });
@@ -684,9 +553,12 @@ namespace SoftUniCookbook.Infrastructure.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("Ingredients");
-
                     b.Navigation("Tags");
+                });
+
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Tag", b =>
+                {
+                    b.Navigation("Recipes");
                 });
 #pragma warning restore 612, 618
         }

@@ -8,6 +8,7 @@ namespace Cookbook.Infrastructure.Data.Models
         public Tag()
         {
             IsDeleted = false;
+            Recipes = new HashSet<RecipeTag>();
         }
 
         [Key]
@@ -17,10 +18,8 @@ namespace Cookbook.Infrastructure.Data.Models
         [StringLength(30, ErrorMessage = "The {0} must be between {2} and {1} characters long.", MinimumLength = 2)]
         public string Name { get; set; }
 
-        [ForeignKey(nameof(User))]
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
-
         public bool IsDeleted { get; set; }
+
+        public ICollection<RecipeTag> Recipes { get; set; }
     }
 }

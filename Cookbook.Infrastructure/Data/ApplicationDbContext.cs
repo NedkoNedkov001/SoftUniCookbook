@@ -1,6 +1,8 @@
 ﻿using Cookbook.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Cookbook.Infrastructure.Data
 {
@@ -15,24 +17,24 @@ namespace Cookbook.Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ApplicationUser>()
-                .HasMany(u => u.SentMessages)
-                .WithOne(um => um.Sender)
+            //builder.Entity<ApplicationUser>()
+            //    .HasMany(u => u.Messages)
+            //    .WithOne(m => m.Sender)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany(u => u.SentMessages)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<ApplicationUser>()
-                .HasMany(u => u.ReceivedMessages)
-                .WithOne(um => um.Receiver)
+            builder.Entity<Message>()
+                .HasOne(m => m.Receiver)
+                .WithMany(u => u.ReceivedMessages)
                 .OnDelete(DeleteBehavior.NoAction);
-
+                
             builder.Entity<ApplicationUser>()
-                .HasMany(u => u.Favorites)
-                .WithOne(uf => uf.User)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<Recipe>()
-                .HasMany(u => u.Tags)
-                .WithOne(rt => rt.Recipe)
+                .HasMany(u => u.Recipes)
+                .WithOne(r => r.Author)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Recipe>()
@@ -40,43 +42,23 @@ namespace Cookbook.Infrastructure.Data
                 .WithOne(rc => rc.Recipe)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<Recipe>()
+                .HasOne(r => r.Author)
+                .WithMany(u => u.Recipes)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<RecipeTag>(r =>
-            {
-                r.HasKey(rt => new { rt.RecipeId, rt.TagId });
-            });
-            //builder.Entity<UserMessage>(u =>
-            //{
-            //    u.HasKey(um => new { um.UserId, um.MessageId });
-            //});
-            builder.Entity<UserIngredient>(u =>
-            {
-                u.HasKey(ui => new { ui.UserId, ui.IngredientId });
-            });
-            builder.Entity<RecipeIngredient>(r =>
-            {
-                r.HasKey(ri => new { ri.RecipeId, ri.IngredientId });
-            });
-            builder.Entity<UserFavorite>(u =>
-            {
-                u.HasKey(uf => new { uf.UserId, uf.RecipeId });
-            });
-            builder.Entity<RecipeComment>(r =>
-            {
-                r.HasKey(rc => new { rc.RecipeId, rc.CommentId });
-            });
+            builder.Entity<UserFavorite>()
+                .HasKey(uf => new { uf.UserId, uf.RecipeId });
+
+            builder.Entity<RecipeTag>()
+                .HasKey(rt => new { rt.RecipeId, rt.TagId });
         }
 
-        public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<UserIngredient> UsersIngredients { get; set; }
-        //public DbSet<Message> Messages { get; set; }
-        public DbSet<UserMessage> UsersMessages { get; set; }
+        public DbSet<Message> Messages { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<RecipeIngredient> RecipesIngredients { get; set; }
-        public DbSet<Comment> Comments { get; set; }
-        public DbSet<RecipeComment> RecipesComments { get; set; }
-        public DbSet<UserFavorite> UsersFavorites { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<UserFavorite> UsersFavorites { get; set; }
         public DbSet<RecipeTag> RecipesTags { get; set; }
     }
 

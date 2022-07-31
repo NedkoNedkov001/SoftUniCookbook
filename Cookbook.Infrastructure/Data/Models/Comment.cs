@@ -23,6 +23,12 @@ namespace Cookbook.Infrastructure.Data.Models
         public string Text { get; set; }
 
         [Required]
+        [ForeignKey(nameof(Recipe))]
+        public Guid RecipeId { get; set; }
+        public Recipe Recipe { get; set; }
+
+
+        [Required]
         public DateTime Date { get; set; }
 
         [Required]
