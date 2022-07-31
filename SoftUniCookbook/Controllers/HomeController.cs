@@ -2,6 +2,7 @@
 using Cookbook.Core.Constants;
 using Cookbook.Core.Contracts;
 using Cookbook.Core.Models;
+using Cookbook.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using SoftUniCookbook.Models;
 using System.Diagnostics;
@@ -13,7 +14,6 @@ namespace SoftUniCookbook.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IUserService userService;
         private readonly IRecipeService recipeService;
-
         public HomeController(ILogger<HomeController> logger, IUserService userService, IRecipeService recipeService)
         {
             this.userService = userService;
@@ -27,11 +27,11 @@ namespace SoftUniCookbook.Controllers
             
             if (keyword != null)
             {
-                home.Recipes = await recipeService.GetFilteredRecipes(keyword);
+                home.Recipes = await recipeService.GetFilteredRecipesAsync(keyword);
             }
             else
             {
-                home.Recipes = await recipeService.GetAllRecipes();
+                home.Recipes = await recipeService.GetAllRecipesAsync();
             }
 
 
@@ -61,12 +61,12 @@ namespace SoftUniCookbook.Controllers
             return View();
         }
 
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
 
     }
 }
