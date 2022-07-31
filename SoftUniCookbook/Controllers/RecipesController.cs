@@ -1,4 +1,5 @@
-﻿using Cookbook.Core.Contracts;
+﻿using Cookbook.Core.Constants;
+using Cookbook.Core.Contracts;
 using Cookbook.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,6 @@ namespace Cookbook.Controllers
     {
         private readonly IUserService userService;
         private readonly IRecipeService recipeService;
-
         public RecipesController(IUserService userService, IRecipeService recipeService)
         {
             this.userService = userService;
@@ -21,11 +21,11 @@ namespace Cookbook.Controllers
 
             if (keyword != null)
             {
-                home.Recipes = await recipeService.GetFilteredRecipes(keyword);
+                home.Recipes = await recipeService.GetFilteredRecipesAsync(keyword);
             }
             else
             {
-                home.Recipes = await recipeService.GetAllRecipes();
+                home.Recipes = await recipeService.GetAllRecipesAsync();
             }
 
 
@@ -41,10 +41,47 @@ namespace Cookbook.Controllers
             return View(home);
         }
 
-        public async Task<IActionResult> Add()
+        public async Task<IActionResult> Add(string userId)
         {
-            return View();
+            var model = new RecipeAddViewModel()
+            {
+                AuthorId = userId
+            };
+
+            return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Add(RecipeAddViewModel recipeToAdd)
+        {
+            if (ModelState.IsValid)
+            {
+                if (Request.Form.Files.Any())
+                {
+                    recipeToAdd.Picture = Request.Form.Files[0];
+                }
+
+                try
+                {
+                    await recipeService.AddRecipe(recipeToAdd);
+                    TempData[MessageConstant.SuccessMessage] = "Added recipe successfully.";
+                    return RedirectToAction("Index", "Recipes");
+                }
+                catch (Exception)
+                {
+                    TempData[MessageConstant.ErrorMessage] = "Could not add recipe".ToArray();
+                    return View(recipeToAdd);
+                }
+            }
+            else
+            {
+                return View(recipeToAdd);
+            }
+        }
+
+        public async Task<IActionResult> View(RecipeViewModel recipe)
+        {
+            return View(recipe);
+        }
     }
 }

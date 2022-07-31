@@ -13,5 +13,7 @@ namespace Cookbook.Core.Contracts
         public Task<IEnumerable<RecipePreviewViewModel>> GetAllRecipesAsync();
         public Task<IEnumerable<RecipePreviewViewModel>> GetFilteredRecipesAsync(string keyword);
         public Task<Recipe> GetRecipeByIdAsync(string recipeId);
+
+        public Task AddRecipe(RecipeAddViewModel recipeToAdd);
     }
 }
