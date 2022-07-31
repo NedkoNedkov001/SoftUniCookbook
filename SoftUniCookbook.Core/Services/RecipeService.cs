@@ -20,6 +20,51 @@ namespace Cookbook.Core.Services
             this.repo = repo;
         }
 
+        public async Task AddRecipe(RecipeAddViewModel recipeToAdd)
+        {
+            byte[] picture;
+            if (recipeToAdd.Picture != null)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await recipeToAdd.Picture.CopyToAsync(stream);
+
+                    picture = stream.ToArray();
+                }
+            }
+            else
+            {
+                picture = ImageToByteArray("../SoftUniCookbook/wwwroot/img/recipe_default_img.jpg");
+            }
+
+            var recipe = new Recipe()
+            {
+                Name = recipeToAdd.Name,
+                Description = recipeToAdd.Description,
+                Instructions = recipeToAdd.Instructions,
+                Ingredients = recipeToAdd.Ingredients,
+                Picture = picture,
+                ServingSize = recipeToAdd.ServingSize,
+                AuthorId = recipeToAdd.AuthorId,
+            };
+
+            await repo.AddAsync(recipe);
+            await repo.SaveChangesAsync();
+        }
+
+        private byte[] ImageToByteArray(string path)
+        {
+            byte[] buff = null;
+            FileStream fs = new FileStream(path,
+                                           FileMode.Open,
+                                           FileAccess.Read);
+            BinaryReader br = new BinaryReader(fs);
+            long numBytes = new FileInfo(path).Length;
+            buff = br.ReadBytes((int)numBytes);
+            return buff;
+        }
+
+
         public async Task<IEnumerable<RecipePreviewViewModel>> GetAllRecipesAsync()
         {
             return await repo.All<Recipe>()
@@ -66,7 +111,6 @@ namespace Cookbook.Core.Services
             }
 
             return recipe;
-
         }
     }
 }
