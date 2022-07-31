@@ -21,7 +21,7 @@ namespace Cookbook.Core.Contracts
         Task<UserViewModel> GetUserForViewByEmailAsync(string email);
         Task<IEnumerable<string>> UpdateUserAsync(UserEditViewModel model);
         Task<bool> DeleteUserAsync(string id);
-        Task<IEnumerable<UserFavorite>> GetUserFavoritesAsync(string id);
+        Task<ICollection<Recipe>> GetUserFavoritesAsync(string id);
         Task<bool> AddFavoriteAsync(string userId, string recipeId);
     }
 }
