@@ -55,7 +55,7 @@ namespace Cookbook.Core.Services
             try
             {
                 var user = await GetUserByUsernameAsync(username);
-                UserViewModel userView = new UserViewModel()
+                var userView = new UserViewModel()
                 {
                     Id = user.Id,
                     Username = user.UserName,
@@ -76,11 +76,11 @@ namespace Cookbook.Core.Services
             {
                 var user = await GetUserByUsernameAsync(username);
 
-                HomeUserViewModel homeUser = new HomeUserViewModel()
+                var homeUser = new HomeUserViewModel()
                 {
                     Id = user.Id,
                     Username = user.UserName,
-                    Favorites = (ICollection<UserFavorite>)GetUserFavoritesAsync(user.Id).Result
+                    Favorites = await GetUserFavoritesAsync(user.Id)
                 };
                 return homeUser;
             }
@@ -177,7 +177,7 @@ namespace Cookbook.Core.Services
             {
                 errors.Add("Email is already taken.");
             }
-            if (errors.Count() == 0)
+            if (errors.Count == 0)
             {
                 var user = await repo.GetByIdAsync<ApplicationUser>(model.Id);
                 if (user != null || user.IsDeleted == false)
@@ -206,28 +206,35 @@ namespace Cookbook.Core.Services
             return (user != null);
         }
 
-        public async Task<IEnumerable<UserFavorite>> GetUserFavoritesAsync(string id)
+        public async Task<ICollection<Recipe>> GetUserFavoritesAsync(string id)
         {
-            return await repo.All<UserFavorite>()
-                .Where(uf => uf.UserId == id)
-                .ToListAsync();
+            var favoriteRecipes = new HashSet<Recipe>();
+
+            var user = await repo.All<ApplicationUser>()
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+
+            foreach (var userFavorite in user.Favorites)
+            {
+                favoriteRecipes.Add(userFavorite.Recipe);
+            }
+                return favoriteRecipes;
         }
 
         public async Task<bool> AddFavoriteAsync(string userId, string recipeId)
         {
             //throw new NotImplementedException();
             var user = await repo.GetByIdAsync<ApplicationUser>(userId);
-            var recipe = await recipeService.GetRecipeById(recipeId);
+            var recipe = await recipeService.GetRecipeByIdAsync(recipeId);
 
             if (user != null && recipe != null)
             {
-                UserFavorite userFavorite = new UserFavorite()
+                user.Favorites.Add(new UserFavorite()
                 {
-                    UserId = user.Id,
-                    RecipeId = recipe.Id
-                };
-                user.Favorites.Add(userFavorite);
-                await repo.AddAsync(userFavorite);
+                    RecipeId = Guid.Parse(recipeId),
+                    UserId = userId
+                });
+
                 await repo.SaveChangesAsync();
                 return true;
             }
