@@ -59,7 +59,7 @@
                                         @if (User.Identity.IsAuthenticated)
                                         {
 
-                                            @if (Model.User.Favorites.Any(f => f.RecipeId == recipe.Id))
+                                            @if (Model.User.Favorites.Any(f => f.Id == recipe.Id))
                                             {
                                                 <a href="#" class="btn btn-sm bg-teal">
                                                     <i class="fas fa-bookmark"></i>
