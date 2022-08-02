@@ -21,40 +21,11 @@ namespace SoftUniCookbook.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index(string keyword = null)
+        public async Task<IActionResult> Index()
         {
-            var home = new HomeViewModel();
-            
-            if (keyword != null)
-            {
-                home.Recipes = await recipeService.GetFilteredRecipesAsync(keyword);
-            }
-            else
-            {
-                home.Recipes = await recipeService.GetAllRecipesAsync();
-            }
-
-
-            if (User.Identity.IsAuthenticated)
-            {
-                home.User = await userService.GetHomeUserByUsernameAsync(User.Identity.Name);
-            }
-            else
-            {
-                home.User = null;
-            }
-
-            return View(home);
+            return RedirectToAction("Index", "Recipes");
 
         }
-
-        public async Task<IActionResult> AddToFavorite(string userId, string recipeId)
-        {
-            await userService.AddFavoriteAsync(userId, recipeId);
-
-            return RedirectToAction(nameof(Index));
-        }
-
 
         public IActionResult Privacy()
         {
@@ -64,7 +35,7 @@ namespace SoftUniCookbook.Controllers
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
-        {
+        {  
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
