@@ -1,8 +1,20 @@
-﻿@using Cookbook.Infrastructure.Data.Models
+﻿@using Cookbook.Core.Contracts
+@using Cookbook.Infrastructure.Data.Models
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
+@inject IUserService userService
+@{
+    ApplicationUser user;
+    try
+    {
+        user = await userService.GetUserByUsernameAsync(User.Identity.Name);
+    }
+    catch (Exception)
+    {
+        user = null;
+    }
+}
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container">
         <a href="/" class="navbar-brand">
@@ -56,10 +68,17 @@
                         <!-- End Level two -->
                     </ul>
                 </li>
+                @if (user != null && await UserManager.IsInRoleAsync(user, "Administrator"))
+                {
+                    <li class="nav-item">
+                        <a href="/admin/user/manageusers" class="nav-link">Admin</a>
+                    </li>
+
+                }
             </ul>
 
             <!-- SEARCH FORM -->
-@*                    <form class="form-inline ml-0 ml-md-3">
+            @*                    <form class="form-inline ml-0 ml-md-3">
             <div class="input-group input-group-sm">
             <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
             <div class="input-group-append">
@@ -78,9 +97,9 @@
                 <!-- Messages Dropdown Menu -->
                 <partial name="_MessagesList" />
                 <!-- Notifications Dropdown Menu -->
-                <partial name="_NotificationsList" />
-            }
-            <partial name="_LoginPartial" />
+@*                <partial name="_NotificationsList" />
+*@            }
+            <partial name="_LoginPartial" model="user"/>
             @*<li class="nav-item">
             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
             <i class="fas fa-th-large"></i>
