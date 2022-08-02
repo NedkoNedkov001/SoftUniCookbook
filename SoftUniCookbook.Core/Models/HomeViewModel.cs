@@ -11,6 +11,8 @@ namespace Cookbook.Core.Models
     {
         public HomeUserViewModel User { get; set; }
 
+        public string Keyword { get; set; }
+
         public IEnumerable<RecipePreviewViewModel> Recipes { get; set; }
     }
 }
