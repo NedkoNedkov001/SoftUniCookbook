@@ -2,6 +2,7 @@
 @using Cookbook.Infrastructure.Data.Models
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@model ApplicationUser
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
@@ -12,7 +13,7 @@
 
                 <div class="image">
                     <a href="/Identity/Account/Manage/">
-                        <img src="~/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
+                        <img src="data:image;base64,@System.Convert.ToBase64String(@Model.Picture)" class="img-circle elevation-2" alt="User Image">
                     </a>
                 </div>
                 <a href="/Identity/Account/Manage/" class="d-block text-dark" style="margin-right: 0.5rem;">
