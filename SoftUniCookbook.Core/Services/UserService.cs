@@ -208,22 +208,14 @@ namespace Cookbook.Core.Services
 
         public async Task<ICollection<Recipe>> GetUserFavoritesAsync(string id)
         {
-            var favoriteRecipes = new HashSet<Recipe>();
-
-            var user = await repo.All<ApplicationUser>()
-                .Where(u => u.Id == id)
-                .FirstOrDefaultAsync();
-
-            foreach (var userFavorite in user.Favorites)
-            {
-                favoriteRecipes.Add(userFavorite.Recipe);
-            }
-                return favoriteRecipes;
+            return  await repo.All<UserFavorite>()
+                .Where(uf => uf.UserId == id)
+                .Select(uf => uf.Recipe)
+                .ToListAsync();
         }
 
         public async Task<bool> AddFavoriteAsync(string userId, string recipeId)
         {
-            //throw new NotImplementedException();
             var user = await repo.GetByIdAsync<ApplicationUser>(userId);
             var recipe = await recipeService.GetRecipeByIdAsync(recipeId);
 
@@ -244,5 +236,21 @@ namespace Cookbook.Core.Services
             }
         }
 
+        public async Task<bool> RemoveFavoriteAsync(string userId, string recipeId)
+        {
+            var recipeToRemove = await repo.All<UserFavorite>()
+                .Where(uf => uf.UserId == userId)
+                .Where(uf => uf.RecipeId == Guid.Parse(recipeId))
+                .FirstOrDefaultAsync();
+
+            if (recipeToRemove != null)
+            {
+                repo.Delete<UserFavorite>(recipeToRemove);
+                await repo.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
     }
 }

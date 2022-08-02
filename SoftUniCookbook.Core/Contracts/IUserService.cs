@@ -23,5 +23,6 @@ namespace Cookbook.Core.Contracts
         Task<bool> DeleteUserAsync(string id);
         Task<ICollection<Recipe>> GetUserFavoritesAsync(string id);
         Task<bool> AddFavoriteAsync(string userId, string recipeId);
+        Task<bool> RemoveFavoriteAsync(string userId, string recipeId);
     }
 }

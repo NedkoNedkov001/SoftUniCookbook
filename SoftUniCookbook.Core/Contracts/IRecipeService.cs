@@ -15,5 +15,6 @@ namespace Cookbook.Core.Contracts
         public Task<Recipe> GetRecipeByIdAsync(string recipeId);
 
         public Task AddRecipe(RecipeAddViewModel recipeToAdd);
+        public Task<bool> DeleteRecipe(string recipeId);
     }
 }

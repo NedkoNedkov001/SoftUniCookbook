@@ -112,5 +112,14 @@ namespace Cookbook.Core.Services
 
             return recipe;
         }
+
+        public async Task<bool> DeleteRecipe(string recipeId)
+        {
+            var recipe = await GetRecipeByIdAsync(recipeId);
+
+            recipe.IsDeleted = true;
+            await repo.SaveChangesAsync();
+            return (recipe != null);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Cookbook.Core.Constants;
 using Cookbook.Core.Contracts;
 using Cookbook.Core.Models;
+using Cookbook.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cookbook.Controllers
@@ -15,6 +16,7 @@ namespace Cookbook.Controllers
             this.recipeService = recipeService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index(string keyword)
         {
             var home = new HomeViewModel();
@@ -39,6 +41,26 @@ namespace Cookbook.Controllers
             }
 
             return View(home);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(HomeViewModel model)
+        {
+            return RedirectToAction("Index", model.Keyword);
+        }
+
+        public async Task<IActionResult> AddFavorite(string userId, string recipeId)
+        {
+            await userService.AddFavoriteAsync(userId, recipeId);
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> RemoveFavorite(string userId, string recipeId)
+        {
+            await userService.RemoveFavoriteAsync(userId, recipeId);
+
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Add(string userId)
@@ -79,8 +101,21 @@ namespace Cookbook.Controllers
             }
         }
 
-        public async Task<IActionResult> View(RecipeViewModel recipe)
+        public async Task<IActionResult> Delete(string id) {
+            if (await recipeService.DeleteRecipe(id))
+            {
+                TempData[MessageConstant.SuccessMessage] = "Deleted recipe successfully.";
+            }
+            else
+            {
+                TempData[MessageConstant.ErrorMessage] = "Could not delete recipe".ToArray();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Show(RecipeViewModel recipe)
         {
+            //TODO: Add HTML and implement 
             return View(recipe);
         }
     }
