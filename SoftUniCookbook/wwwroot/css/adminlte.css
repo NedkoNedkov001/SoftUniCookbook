@@ -11626,6 +11626,7 @@ body:not(.layout-fixed).layout-navbar-fixed.text-sm .wrapper .main-sidebar .side
   margin-top: -.5rem;
   margin-right: .2rem;
   height: 33px;
+  width: auto;
 }
 
 .layout-top-nav .wrapper .main-sidebar {
@@ -44515,8 +44516,16 @@ select.form-control-sm ~ .select2-container--default .select2-selection--multipl
 
 .img-circle {
   border-radius: 50%;
-  height: auto;
+  height: 150px;
+  width: 150px;
 }
+
+.img-circle-small {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+}
+
 
 .img-size-64,
 .img-size-50,
