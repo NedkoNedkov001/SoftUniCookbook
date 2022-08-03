@@ -65,10 +65,12 @@ namespace Cookbook.Core.Services
         }
 
 
-        public async Task<IEnumerable<RecipePreviewViewModel>> GetAllRecipesAsync()
+        public async Task<IEnumerable<RecipePreviewViewModel>> GetAllRecipesAsync(int page)
         {
             return await repo.All<Recipe>()
                             .Where(r => r.IsDeleted == false)
+                            .Skip((page-1) * 9)
+                            .Take(9)
                             .Select(r => new RecipePreviewViewModel()
                             {
                                 Id = r.Id,

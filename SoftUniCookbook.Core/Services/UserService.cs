@@ -188,7 +188,22 @@ namespace Cookbook.Core.Services
                     user.NormalizedEmail = model.Email.ToUpper();
                     user.PhoneNumber = model.PhoneNumber;
                     user.PhoneNumberConfirmed = false;
-                    //user.Picture = model.Picture;
+                  
+                    if (model.NewPicture != null)
+                    {
+                        using (var stream = new MemoryStream())
+                        {
+                            await model.NewPicture.CopyToAsync(stream);
+
+                            byte[] picture = stream.ToArray();
+                            user.Picture = picture;
+                        }
+                    }
+                    
+                    if (model.About != null)
+                    {
+                        user.About = model.About;
+                    }
 
                     await repo.SaveChangesAsync();
                 }
@@ -208,7 +223,7 @@ namespace Cookbook.Core.Services
 
         public async Task<ICollection<Recipe>> GetUserFavoritesAsync(string id)
         {
-            return  await repo.All<UserFavorite>()
+            return await repo.All<UserFavorite>()
                 .Where(uf => uf.UserId == id)
                 .Select(uf => uf.Recipe)
                 .ToListAsync();
@@ -251,6 +266,38 @@ namespace Cookbook.Core.Services
             }
 
             return false;
+        }
+
+        public async Task<DetailedUserViewModel> GetDetailedUserByUsernameAsync(string username)
+        {
+            return await repo.All<ApplicationUser>()
+                .Where(u => u.NormalizedUserName == username.ToUpper())
+                .Select(u => new DetailedUserViewModel()
+                {
+                    Id = u.Id,
+                    Username = u.UserName,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber,
+                    Picture = u.Picture,
+                    About = u.About,               
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<UserEditViewModel> GetUserForEditByUsernameAsync(string username)
+        {
+            return await repo.All<ApplicationUser>()
+                .Where(u => u.NormalizedUserName == username.ToUpper())
+                .Select(u => new UserEditViewModel()
+                {
+                    Id = u.Id,
+                    Username = u.UserName,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber,
+                    Picture = u.Picture,
+                    About = u.About,
+                })
+                .FirstOrDefaultAsync();
         }
     }
 }
