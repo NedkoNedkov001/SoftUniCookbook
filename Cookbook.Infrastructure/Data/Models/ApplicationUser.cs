@@ -20,6 +20,10 @@ namespace Cookbook.Infrastructure.Data.Models
         }
         public byte[] Picture { get; set; }
 
+        [Display(Name = "About user")]
+        [StringLength(300, ErrorMessage = "{0} must be maximum {1} characters long.")]
+        public string About { get; set; }
+
         public bool IsDeleted { get; set; }
 
 

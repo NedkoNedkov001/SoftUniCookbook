@@ -27,6 +27,11 @@ namespace SoftUniCookbook.Infrastructure.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("About")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
@@ -124,7 +129,7 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Message", b =>
@@ -161,7 +166,7 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Recipe", b =>
@@ -211,7 +216,7 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Recipes", (string)null);
+                    b.ToTable("Recipes");
                 });
 
             modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.RecipeTag", b =>
@@ -226,7 +231,7 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("RecipesTags", (string)null);
+                    b.ToTable("RecipesTags");
                 });
 
             modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Tag", b =>
@@ -245,7 +250,7 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.UserFavorite", b =>
@@ -260,7 +265,7 @@ namespace SoftUniCookbook.Infrastructure.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("UsersFavorites", (string)null);
+                    b.ToTable("UsersFavorites");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
