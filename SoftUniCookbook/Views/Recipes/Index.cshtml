@@ -41,8 +41,8 @@
                         {
                             <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
                                 <div class="card bg-light d-flex flex-fill">
-                               <br>
-                            <div class="card-body pt-0">
+                                    <br>
+                                    <div class="card-body pt-0">
                                         <div class="row">
                                             <div class="col-7">
                                                 <h2 class="lead"><b>@recipe.Name</b></h2>
@@ -75,14 +75,14 @@
                                                     </a>
 
                                                 }
-                                            }
-                                            @if (recipe.AuthorId == Model.User.Id)
-                                            {
-                                                <a class="btn btn-info btn-sm bg-red" asp-action="delete" asp-controller="recipes" asp-route-id="@recipe.Id">
-                                                    <i class="fas fa-trash"></i>
-                                                    Delete
-                                                </a>
+                                                @if (recipe.AuthorId == Model.User.Id)
+                                                {
+                                                    <a class="btn btn-info btn-sm bg-red" asp-action="delete" asp-controller="recipes" asp-route-id="@recipe.Id">
+                                                        <i class="fas fa-trash"></i>
+                                                        Delete
+                                                    </a>
 
+                                                }
                                             }
                                             <a class="btn btn-info btn-sm" asp-action="show" asp-controller="recipes" asp-route-id="@recipe.Id">
                                                 <i class="fas fa-book-open">
