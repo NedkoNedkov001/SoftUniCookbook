@@ -1,4 +1,5 @@
 ﻿using Cookbook.Core.CustomAttributes;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,7 +22,11 @@ namespace Cookbook.Core.Models
         [Display(Name = "Phone number")]
         public string? PhoneNumber { get; set; }
 
-        //public byte[] Picture { get; set; }
+        public byte[] Picture { get; set; }
+
+        public IFormFile? NewPicture { get; set; }
+
+        public string? About { get; set; }
 
     }
 }
