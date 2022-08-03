@@ -17,17 +17,17 @@ namespace Cookbook.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string keyword)
+        public async Task<IActionResult> Index(int page, string keyword)
         {
             var home = new HomeViewModel();
 
             if (keyword != null)
             {
-                home.Recipes = await recipeService.GetFilteredRecipesAsync(keyword);
+                home.Recipes = await recipeService.GetFilteredRecipesAsync(page, keyword);
             }
             else
             {
-                home.Recipes = await recipeService.GetAllRecipesAsync();
+                home.Recipes = await recipeService.GetAllRecipesAsync(page);
             }
 
 
