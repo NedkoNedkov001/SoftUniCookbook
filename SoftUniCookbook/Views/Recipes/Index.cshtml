@@ -1,0 +1,123 @@
+﻿@using Cookbook.Core.Models
+@{
+    ViewData["Title"] = "Recipes";
+}
+@model HomeViewModel
+
+<div class="content-wrapper" style="min-height: 1604.71px;">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Recipes</h1>
+                </div>
+                <div class="col-sm-6">
+                    <form class="form-inline ml-0 ml-md-3 float-sm-right">
+                        <div class="input-group input-group-sm">
+                            <input asp-for="@Model.Keyword" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-navbar" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+
+        <div class="card card-solid">
+            <div class="card-body pb-0">
+                <div class="row">
+                    @if (Model.Recipes.Count() == 0)
+                    {
+                        <p>There are no such recipes. Try again later.</p>
+                    }
+                    else
+                    {
+                        @foreach (var recipe in Model.Recipes)
+                        {
+                            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                                <div class="card bg-light d-flex flex-fill">
+                                    <br>
+                                    <div class="card-body pt-0">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <h2 class="lead"><b>@recipe.Name</b></h2>
+                                                <p class="text-muted text-sm">@recipe.Description</p>
+                                                <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                    <li class="small"><span class="fa-li"><i class="fas fa-utensils"></i></span> Serve size: @recipe.ServeSize</li>
+                                                    <li class="small"><span class="fa-li"><i class="fas fa-user"></i></span> Added by: <a href="/">@recipe.AuthorNickname</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-5 text-center">
+                                                <img src="data:image;base64,@System.Convert.ToBase64String(recipe.Picture)" alt="user-avatar" class="img-circle img-fluid" style="height:7.5rem; width:7.5rem;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="text-right">
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
+
+                                                @if (Model.User.Favorites.Any(f => f.Id == recipe.Id))
+                                                {
+                                                    <a asp-action="removefavorite" asp-controller="recipes" asp-route-userId="@Model.User.Id" asp-route-recipeId="@recipe.Id" class="btn btn-sm bg-teal">
+                                                        <i class="fas fa-bookmark"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a asp-action="addfavorite" asp-controller="recipes" asp-route-userId="@Model.User.Id" asp-route-recipeId="@recipe.Id" class="btn btn-sm bg-gray">
+                                                        <i class="fas fa-bookmark"></i>
+                                                    </a>
+
+                                                }
+                                                @if (recipe.AuthorId == Model.User.Id)
+                                                {
+                                                    <a class="btn btn-info btn-sm bg-red" asp-action="delete" asp-controller="recipes" asp-route-id="@recipe.Id">
+                                                        <i class="fas fa-trash"></i>
+                                                        Delete
+                                                    </a>
+
+                                                }
+                                            }
+                                            <a class="btn btn-info btn-sm" asp-action="show" asp-controller="recipes" asp-route-id="@recipe.Id">
+                                                <i class="fas fa-book-open">
+                                                </i>
+                                                View
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    }
+
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <nav aria-label="Contacts Page Navigation">
+                    <ul class="pagination justify-content-center m-0">
+                        @for (int i = 0; i <= Model.Recipes.Count() / 10; i++)
+                        {
+                            <li class="page-item active"><a class="page-link" href="#">@(i+1)</a></li>
+                        }
+                    </ul>
+                </nav>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a class="btn btn-app bg-info float-sm-right" asp-action="Add" asp-controller="Recipes" asp-route-userId="@Model.User.Id">
+                        <i class="fas fa-pen"></i> Add
+                    </a>
+                }
+            </div>
+
+        </div>
+
+    </section>
+</div>

@@ -1,0 +1,50 @@
+﻿@using Cookbook.Core.Constants
+
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+</script>
+
+@if (ViewData[MessageConstant.ErrorMessage] != null)
+{
+    <script>
+
+        $(function() {
+
+            var errors = @Html.Raw(Json.Serialize(@ViewData[MessageConstant.ErrorMessage]));
+            errors.forEach(x => toastr.error(x));
+
+        });
+    </script>
+}
+@if (ViewData[MessageConstant.SuccessMessage] != null)
+{
+    <script>
+        $(function() {
+            toastr.success('@ViewData[MessageConstant.SuccessMessage].ToString()');
+        });
+    </script>
+}
+@if (ViewData[MessageConstant.WarningMessage] != null)
+{
+    <script>
+        $(function() {
+            toastr.warning('@ViewData[MessageConstant.WarningMessage].ToString()');
+        });
+    </script>
+}

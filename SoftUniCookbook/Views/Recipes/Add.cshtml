@@ -1,0 +1,96 @@
+﻿@using Cookbook.Core.Models
+@model RecipeAddViewModel
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Add recipe";
+
+}
+
+<div class="wrapper">
+    <div class="content-wrapper" style="min-height: 1345.52px;">
+
+        @*        <section class="content-header">
+        <div class="container-fluid">
+        <div class="row mb-2">
+        <div class="col-sm-6">
+        <h1>Add recipe</h1>
+        </div>
+        <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active">General Form</li>
+        </ol>
+        </div>
+        </div>
+        </div>
+        </section>
+        *@
+        <br />
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card card-primary row">
+                    <div class="card-header">
+                        <h3 class="card-title">Add recipe</h3>
+                    </div>
+                    <form enctype=multipart/form-data method="post">
+                        <input type="hidden" asp-for="AuthorId" value="@Model.AuthorId" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row">
+                            <div class="col-12 col-sm-6 col-md-6 d-flex align-items-stretch flex-column">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label asp-for="Name" class="form-label"></label>
+                                        <input asp-for="Name" placeholder="Recipe name" class="form-control" aria-required="true" />
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Picture" class="control-label"></label>
+                                        <br />
+                                        <input type="file" asp-for="Picture" name="RecipePicture" id="RecipePicture" />
+                                        <span asp-validation-for="Picture" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="ServingSize" class="form-label"></label>
+                                        <input asp-for="ServingSize" type="number" min="2" max="12" class="form-control" aria-required="true" />
+                                        <span asp-validation-for="ServingSize" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Description" class="form-label"></label>
+                                        <textarea asp-for="Description" placeholder="Description" class="form-control" rows="3" maxlength="300" style="min-height: 40px; max-height: 130px" aria-required="true"></textarea>
+                                        <span asp-validation-for="Description" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-6 d-flex align-items-stretch flex-column">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label asp-for="Instructions" class="form-label"></label>
+                                        <textarea asp-for="Instructions" placeholder="Instructions" class="form-control" rows="3" maxlength="1000" style="min-height: 40px; max-height: 130px" aria-required="true"></textarea>
+                                        <span asp-validation-for="Instructions" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Ingredients" class="form-label"></label>
+                                        <textarea asp-for="Ingredients" placeholder="E.g. 100ml milk" class="form-control" rows="3" maxlength="1000" style="min-height: 40px; max-height: 130px" aria-required="true"></textarea>
+                                        <span asp-validation-for="Ingredients" class="text-danger"></span>
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

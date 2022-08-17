@@ -1,26 +1,44 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@using Cookbook.Infrastructure.Data.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model ApplicationUser
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel d-flex">
+            <ul class="nav">
+
+                <div class="image">
+                    <a href="/Identity/Account/Manage/">
+                        <img src="data:image;base64,@System.Convert.ToBase64String(@Model.Picture)" class="img-circle elevation-2" alt="User Image">
+                    </a>
+                </div>
+                <a class="d-block text-dark" style="margin-right: 0.5rem;" href="/user/edit">
+                    <div class="info">
+                        @User.Identity.Name
+                    </div>
+                </a>
+
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                    <button type="submit" class="nav-item btn btn-link text-dark">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sign Out
+                    </button>
+                </form>
+            </ul>
+        </div>
+
+    }
+    else
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link" href="/Identity/Account/Login/">
+                <id class="fas fa-sign-in-alt"></id>
+                Sign In
+            </a>
+        </li>
+    }
 </ul>
