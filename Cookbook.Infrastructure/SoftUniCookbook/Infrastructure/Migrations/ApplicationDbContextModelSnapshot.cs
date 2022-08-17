@@ -209,9 +209,6 @@ namespace SoftUniCookbook.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
-
                     b.Property<byte>("ServingSize")
                         .HasColumnType("tinyint");
 

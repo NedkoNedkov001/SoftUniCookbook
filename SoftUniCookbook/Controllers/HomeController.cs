@@ -23,7 +23,7 @@ namespace SoftUniCookbook.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return RedirectToAction("Index", "Recipes", new RouteValueDictionary { { "page", 1 } });
+            return RedirectToAction("Index", "Recipes");
 
         }
 

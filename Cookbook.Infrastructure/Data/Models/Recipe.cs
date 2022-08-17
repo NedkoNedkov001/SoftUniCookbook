@@ -9,7 +9,6 @@ namespace Cookbook.Infrastructure.Data.Models
         {
             Id = Guid.NewGuid();
             Comments = new HashSet<Comment>();
-            Score = 0;
             Tags = new HashSet<RecipeTag>();
             DateCreated = DateTime.Now;
             IsDeleted = false;
@@ -50,9 +49,6 @@ namespace Cookbook.Infrastructure.Data.Models
 
 
         public ICollection<Comment> Comments { get; set; }
-
-        [Required]
-        public int Score { get; set; }
 
         [Required]
         public DateTime DateCreated { get; set; }

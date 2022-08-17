@@ -49,7 +49,7 @@
                                                 <p class="text-muted text-sm">@recipe.Description</p>
                                                 <ul class="ml-4 mb-0 fa-ul text-muted">
                                                     <li class="small"><span class="fa-li"><i class="fas fa-utensils"></i></span> Serve size: @recipe.ServeSize</li>
-                                                    <li class="small"><span class="fa-li"><i class="fas fa-user"></i></span> Added by: <a asp-action="Show" asp-controller="User" asp-route-userId="@recipe.AuthorId">@recipe.AuthorNickname</a></li>
+                                                    <li class="small"><span class="fa-li"><i class="fas fa-user"></i></span> Added by: <a href="/">@recipe.AuthorNickname</a></li>
                                                 </ul>
                                             </div>
                                             <div class="col-5 text-center">
@@ -84,7 +84,7 @@
 
                                                 }
                                             }
-                                            <a class="btn btn-info btn-sm" asp-action="show" asp-controller="recipes" asp-route-recipeId="@recipe.Id" >
+                                            <a class="btn btn-info btn-sm" asp-action="show" asp-controller="recipes" asp-route-id="@recipe.Id">
                                                 <i class="fas fa-book-open">
                                                 </i>
                                                 View

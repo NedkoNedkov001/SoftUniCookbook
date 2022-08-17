@@ -21,18 +21,16 @@ namespace Cookbook.Core.Models
 
         public string Instructions { get; set; }
 
-        public int Score { get; set; }
-
         public ApplicationUser Author { get; set; }
 
         public byte ServingSize { get; set; }
 
-        public List<TagViewModel> Tags { get; set; }
+        public ICollection<RecipeTag> Tags { get; set; }
 
-        public List<CommentViewModel> Comments { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
         public DateTime DateCreated { get; set; }
-        public UserViewModel CurrentUser { get; set; }
-        public CommentAddViewModel NewComment { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }
