@@ -7,6 +7,7 @@ namespace Cookbook.Infrastructure.Data.Models
     {
         public Comment()
         {
+            Id = Guid.NewGuid();
             Date = DateTime.Now;
             IsDeleted = false;
         }
