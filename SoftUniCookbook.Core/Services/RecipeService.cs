@@ -69,7 +69,8 @@ namespace Cookbook.Core.Services
         {
             return await repo.All<Recipe>()
                             .Where(r => r.IsDeleted == false)
-                            .Skip((page-1) * 9)
+                            .OrderByDescending(r => r.Score)
+                            .Skip((page - 1) * 9)
                             .Take(9)
                             .Select(r => new RecipePreviewViewModel()
                             {
@@ -84,11 +85,12 @@ namespace Cookbook.Core.Services
                             .ToListAsync();
         }
 
-        public async Task<IEnumerable<RecipePreviewViewModel>> GetFilteredRecipesAsync(string keyword)
+        public async Task<IEnumerable<RecipePreviewViewModel>> GetFilteredRecipesAsync(int page, string keyword)
         {
             return await repo.All<Recipe>()
                 .Where(r => r.Name.Contains(keyword))
                 .Where(r => r.IsDeleted == false)
+                .OrderByDescending((r) => r.Score)
                 .Select(r => new RecipePreviewViewModel()
                 {
                     Id = r.Id,
@@ -122,6 +124,84 @@ namespace Cookbook.Core.Services
             recipe.IsDeleted = true;
             await repo.SaveChangesAsync();
             return (recipe != null);
+        }
+
+        public async Task<RecipeViewModel> GetRecipeForViewByIdAsync(string recipeId, UserViewModel user)
+        {
+            RecipeViewModel recipe = await repo.All<Recipe>()
+                .Where(r => r.Id == Guid.Parse(recipeId))
+                .Select(r => new RecipeViewModel()
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Description = r.Description,
+                    Author = r.Author,
+                    DateCreated = r.DateCreated,
+                    Picture = r.Picture,
+                    ServingSize = r.ServingSize,
+                    Score = r.Score,
+                    Ingredients = r.Ingredients,
+                    Instructions = r.Instructions,
+                    
+                })
+                .FirstOrDefaultAsync();
+
+            recipe.Comments = await GetCommentsForViewByRecipeIdAsync(recipeId);
+            recipe.Tags = await GetTagsForViewByRecipeIdAsync(recipeId);
+            recipe.CurrentUser = user;
+            return recipe;
+        }
+
+        private async Task<List<TagViewModel>> GetTagsForViewByRecipeIdAsync(string recipeId)
+        {
+            return await repo.All<RecipeTag>()
+                .Where(rt => rt.RecipeId == Guid.Parse(recipeId))
+                .Select(rt => new TagViewModel()
+                {
+                    Id = rt.TagId,
+                    Name = rt.Tag.Name
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<CommentViewModel>> GetCommentsForViewByRecipeIdAsync(string recipeId)
+        {
+            return await repo.All<Comment>()
+                .Where(c => c.IsDeleted == false)
+                .Where(c => c.RecipeId == Guid.Parse(recipeId))
+                .OrderByDescending(c => c.Date)
+                .Select(c => new CommentViewModel()
+                {
+                    Id = c.Id,
+                    Date = c.Date,
+                    Text = c.Text,
+                    User = c.User,
+                })
+                .ToListAsync();
+        }
+
+        public async Task AddCommentAsync(string userId, string recipeId, string text)
+        {
+            Comment comment = new Comment()
+            {
+                UserId = userId,
+                RecipeId = Guid.Parse(recipeId),
+                Text = text
+            };
+
+            await repo.AddAsync(comment);
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task DeleteCommentByIdAsync(string commentId)
+        {
+            Comment comment = await repo.All<Comment>()
+                .Where(c => c.Id == Guid.Parse(commentId))
+                .FirstOrDefaultAsync();
+
+            comment.IsDeleted = true;
+
+            await repo.SaveChangesAsync();
         }
     }
 }

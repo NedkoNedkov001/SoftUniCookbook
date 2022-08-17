@@ -113,10 +113,31 @@ namespace Cookbook.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Show(RecipeViewModel recipe)
+        public async Task<IActionResult> Show(string recipeId)
         {
-            //TODO: Add HTML and implement 
+            UserViewModel user = await userService.GetUserForViewByUsernameAsync(User.Identity.Name);
+            RecipeViewModel recipe = await recipeService.GetRecipeForViewByIdAsync(recipeId, user);
+
             return View(recipe);
+        }
+
+        public async Task<IActionResult> DeleteComment(string recipeId, string commentId)
+        {
+            await recipeService.DeleteCommentByIdAsync(commentId);
+
+            return RedirectToAction("show", "recipes", new RouteValueDictionary { { "recipeId", recipeId } });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddComment()
+        {
+            string userId = Request.Form["NewComment.UserId"];
+            string recipeId = Request.Form["NewComment.RecipeId"];
+            string text = Request.Form["NewComment.Text"];
+
+            await recipeService.AddCommentAsync(userId, recipeId, text);
+
+            return RedirectToAction("show", "recipes", new RouteValueDictionary { { "recipeId", recipeId } });
         }
     }
 }
