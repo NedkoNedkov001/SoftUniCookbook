@@ -23,5 +23,6 @@ namespace Cookbook.Core.Models
         [Required]
         public byte[] Picture { get; set; }
 
+        public ICollection<Guid> Favorites { get; set; }
     }
 }

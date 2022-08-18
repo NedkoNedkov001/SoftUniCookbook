@@ -32,7 +32,7 @@ namespace Cookbook.Core.Models
         public List<CommentViewModel> Comments { get; set; }
 
         public DateTime DateCreated { get; set; }
-        public UserViewModel CurrentUser { get; set; }
+        public UserOnRecipeShowViewModel CurrentUser { get; set; }
         public CommentAddViewModel NewComment { get; set; }
     }
 }

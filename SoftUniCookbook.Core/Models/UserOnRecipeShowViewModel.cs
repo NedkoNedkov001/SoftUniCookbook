@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 
 namespace Cookbook.Core.Models
 {
-    public class HomeUserViewModel
+    public class UserOnRecipeShowViewModel
     {
         public string Id { get; set; }
 
-        public string Username { get; set; }
-
         public ICollection<Guid> Favorites { get; set; }
 
+        public bool? LikedRecipe { get; set; }
     }
 }
