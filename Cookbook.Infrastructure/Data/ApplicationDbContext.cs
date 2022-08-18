@@ -52,6 +52,9 @@ namespace Cookbook.Infrastructure.Data
 
             builder.Entity<RecipeTag>()
                 .HasKey(rt => new { rt.RecipeId, rt.TagId });
+
+            builder.Entity<Rating>()
+                .HasKey(r => new { r.UserId, r.RecipeId });
         }
 
         public DbSet<Message> Messages { get; set; }
@@ -60,6 +63,7 @@ namespace Cookbook.Infrastructure.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<UserFavorite> UsersFavorites { get; set; }
         public DbSet<RecipeTag> RecipesTags { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
     }
 
 }

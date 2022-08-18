@@ -169,6 +169,24 @@ namespace SoftUniCookbook.Infrastructure.Migrations
                     b.ToTable("Messages");
                 });
 
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Rating", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool?>("Likes")
+                        .HasColumnType("bit");
+
+                    b.HasKey("UserId", "RecipeId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("Ratings");
+                });
+
             modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Recipe", b =>
                 {
                     b.Property<Guid>("Id")
@@ -444,6 +462,25 @@ namespace SoftUniCookbook.Infrastructure.Migrations
                     b.Navigation("Receiver");
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Rating", b =>
+                {
+                    b.HasOne("Cookbook.Infrastructure.Data.Models.Recipe", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cookbook.Infrastructure.Data.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Cookbook.Infrastructure.Data.Models.Recipe", b =>
