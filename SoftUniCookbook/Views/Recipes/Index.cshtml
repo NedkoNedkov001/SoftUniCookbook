@@ -12,7 +12,7 @@
                     <h1>Recipes</h1>
                 </div>
                 <div class="col-sm-6">
-                    <form class="form-inline ml-0 ml-md-3 float-sm-right">
+                    <form asp-controller="recipes" asp-action="search" asp-route-keyword="@Model.Keyword" class="form-inline ml-0 ml-md-3 float-sm-right">
                         <div class="input-group input-group-sm">
                             <input asp-for="@Model.Keyword" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
                             <div class="input-group-append">
@@ -62,16 +62,16 @@
                                             @if (User.Identity.IsAuthenticated)
                                             {
 
-                                                @if (Model.User.Favorites.Any(f => f.Id == recipe.Id))
+                                                @if (Model.User.Favorites.Contains(recipe.Id))
                                                 {
                                                     <a asp-action="removefavorite" asp-controller="recipes" asp-route-userId="@Model.User.Id" asp-route-recipeId="@recipe.Id" class="btn btn-sm bg-teal">
-                                                        <i class="fas fa-bookmark"></i>
+                                                        <i class="fas fa-heart"></i>
                                                     </a>
                                                 }
                                                 else
                                                 {
                                                     <a asp-action="addfavorite" asp-controller="recipes" asp-route-userId="@Model.User.Id" asp-route-recipeId="@recipe.Id" class="btn btn-sm bg-gray">
-                                                        <i class="fas fa-bookmark"></i>
+                                                        <i class="far fa-heart"></i>
                                                     </a>
 
                                                 }
@@ -84,7 +84,7 @@
 
                                                 }
                                             }
-                                            <a class="btn btn-info btn-sm" asp-action="show" asp-controller="recipes" asp-route-recipeId="@recipe.Id" >
+                                            <a class="btn btn-info btn-sm" asp-action="show" asp-controller="recipes" asp-route-recipeId="@recipe.Id">
                                                 <i class="fas fa-book-open">
                                                 </i>
                                                 View

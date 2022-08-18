@@ -18,73 +18,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
-                        <div class="row">
-                            <div class="col-12 col-sm-4">
-                                <div class="info-box bg-light">
-                                    <div class="info-box-content">
-                                        <span class="info-box-text text-center text-muted">Estimated budget</span>
-                                        <span class="info-box-number text-center text-muted mb-0">2300</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="info-box bg-light">
-                                    <div class="info-box-content">
-                                        <span class="info-box-text text-center text-muted">Total amount spent</span>
-                                        <span class="info-box-number text-center text-muted mb-0">2000</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="info-box bg-light">
-                                    <div class="info-box-content">
-                                        <span class="info-box-text text-center text-muted">Estimated project duration</span>
-                                        <span class="info-box-number text-center text-muted mb-0">20</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <h4>Comments (@Model.Comments.Count)</h4>
-                                <div class="post">
-                                    <form asp-controller="Recipes" asp-action="AddComment" method="post">
-                                        <input type="hidden" asp-for="NewComment.UserId" value="@Model.CurrentUser.Id" />
-                                        <input type="hidden" asp-for="NewComment.RecipeId" value="@Model.Id" />
-                                        <textarea asp-for="NewComment.Text" placeholder="Enter comment here" class="form-control" rows="3" maxlength="300" style="resize: none; height: 10  0px" aria-required="true"></textarea>
-                                        <br />
-                                        <div>
-                                            <button type="submit" class="btn btn-primary">Add comment</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                @foreach (var comment in Model.Comments)
-                                {
-                                    <div class="post">
-                                        <div class="user-block">
-                                            <img class="img-circle img-bordered-sm" src="data:image;base64,@System.Convert.ToBase64String(comment.User.Picture)" alt="user image">
-                                            @if (Model.CurrentUser.Id == comment.User.Id)
-                                            {
-                                                <a asp-controller="recipes" asp-action="deleteComment" asp-route-recipeId="@Model.Id" asp-route-commentId="@comment.Id" class="btn" style="float: right"><i class="fas fa-times"></i></a>
-                                            }
-                                            <span class="username">
-                                                <a asp-controller="User" asp-action="Show" asp-route-userId="@comment.User.Id">@comment.User.UserName</a>
-                                            </span>
-                                            <span class="description">Posted on @comment.Date</span>
-                                        </div>
 
-                                        <p>
-                                            @comment.Text
-                                        </p>
-
-                                    </div>
-                                }
-
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
                         <h3 class="text-primary"><i class="fas fa-paint-brush"></i> AdminLTE v3</h3>
                         <p class="text-muted">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terr.</p>
                         <br>
@@ -120,6 +54,128 @@
                             <a href="#" class="btn btn-sm btn-primary">Add files</a>
                             <a href="#" class="btn btn-sm btn-warning">Report contact</a>
                         </div>
+
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
+
+                        <div class="row">
+                            <div class="col-12 col-sm-4">
+                                <div class="info-box bg-light">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text text-center text-muted">Score</span>
+                                        <span class="info-box-number text-center text-muted mb-0">@Model.Score</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="row">
+                                <div class="col-12 col-sm-11">
+                                    @if (Model.CurrentUser.LikedRecipe == true)
+                                    {
+                                        <a asp-controller="Recipes" asp-action="Upvote" asp-route-recipeId="@Model.Id" asp-route-userId="@Model.CurrentUser.Id" class="btn btn-app bg-blue" style="margin-left: 0px">
+                                            <i class="fas fa-thumbs-up"></i> Upvote
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Recipes" asp-action="Upvote" asp-route-recipeId="@Model.Id" asp-route-userId="@Model.CurrentUser.Id" class="btn btn-app" style="margin-left: 0px">
+                                            <i class="far fa-thumbs-up"></i> Upvote
+                                        </a>
+                                    }
+
+                                    @if (Model.CurrentUser.LikedRecipe == false)
+                                    {
+                                        <a asp-controller="Recipes" asp-action="Downvote" asp-route-recipeId="@Model.Id" asp-route-userId="@Model.CurrentUser.Id" class="btn btn-app bg-red">
+                                            <i class="fas fa-thumbs-down"></i> Downvote
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Recipes" asp-action="Downvote" asp-route-recipeId="@Model.Id" asp-route-userId="@Model.CurrentUser.Id" class="btn btn-app">
+                                            <i class="far fa-thumbs-down"></i> Downvote
+                                        </a>
+
+                                    }
+                                    @if (Model.CurrentUser.Favorites.Contains(Model.Id))
+                                    {
+                                        <a asp-action="RemoveFavoriteOpen" asp-controller="recipes" asp-route-userId="@Model.CurrentUser.Id" asp-route-recipeId="@Model.Id" class="btn btn-app bg-teal">
+                                            <i class="fas fa-heart"></i>Favorite
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="AddFavoriteOpen" asp-controller="recipes" asp-route-userId="@Model.CurrentUser.Id" asp-route-recipeId="@Model.Id" class="btn btn-app">
+                                            <i class="far fa-heart"></i>Favorite
+                                        </a>
+
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        @*                            <div class="col-12 col-sm-4">
+                        <div class="info-box bg-light">
+                        <div class="info-box-content">
+                        <span class="info-box-text text-center text-muted">Total amount spent</span>
+                        <span class="info-box-number text-center text-muted mb-0">2000</span>
+                        </div>
+                        </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                        <div class="info-box bg-light">
+                        <div class="info-box-content">
+                        <span class="info-box-text text-center text-muted">Estimated project duration</span>
+                        <span class="info-box-number text-center text-muted mb-0">20</span>
+                        </div>
+                        </div>
+                        </div>*@
+                        <div class="row">
+                            <div class="col-12">
+                                <h4>Comments (@Model.Comments.Count)</h4>
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <div class="post">
+                                        <form asp-controller="Recipes" asp-action="AddComment" method="post">
+                                            <input type="hidden" asp-for="NewComment.UserId" value="@Model.CurrentUser.Id" />
+                                            <input type="hidden" asp-for="NewComment.RecipeId" value="@Model.Id" />
+                                            <textarea asp-for="NewComment.Text" placeholder="Enter comment here" class="form-control" rows="3" maxlength="300" style="resize: none; height: 10  0px" aria-required="true"></textarea>
+                                            <br />
+                                            <div>
+                                                <button type="submit" class="btn btn-primary">Add comment</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                }
+                                @foreach (var comment in Model.Comments)
+                                {
+                                    <div class="post">
+                                        <div class="user-block">
+                                            <img class="img-circle img-bordered-sm" src="data:image;base64,@System.Convert.ToBase64String(comment.User.Picture)" alt="user image">
+                                            @if (User.Identity.IsAuthenticated && Model.CurrentUser.Id == comment.User.Id)
+                                            {
+                                                <a asp-controller="recipes" asp-action="deleteComment" asp-route-recipeId="@Model.Id" asp-route-commentId="@comment.Id" class="btn" style="float: right"><i class="fas fa-times"></i></a>
+                                            }
+                                            <span class="username">
+                                                <a asp-controller="User" asp-action="Show" asp-route-userId="@comment.User.Id">@comment.User.UserName</a>
+                                            </span>
+                                            <span class="description">Posted on @comment.Date</span>
+                                        </div>
+
+                                        <p>
+                                            @comment.Text
+                                        </p>
+
+                                    </div>
+                                }
+
+
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
