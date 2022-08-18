@@ -91,6 +91,8 @@ namespace Cookbook.Core.Services
                 .Where(r => r.Name.Contains(keyword))
                 .Where(r => r.IsDeleted == false)
                 .OrderByDescending((r) => r.Score)
+                .Skip((page - 1) * 9)
+                .Take(9)
                 .Select(r => new RecipePreviewViewModel()
                 {
                     Id = r.Id,
@@ -126,7 +128,7 @@ namespace Cookbook.Core.Services
             return (recipe != null);
         }
 
-        public async Task<RecipeViewModel> GetRecipeForViewByIdAsync(string recipeId, UserViewModel user)
+        public async Task<RecipeViewModel> GetRecipeForViewByIdAsync(string recipeId, UserOnRecipeShowViewModel user)
         {
             RecipeViewModel recipe = await repo.All<Recipe>()
                 .Where(r => r.Id == Guid.Parse(recipeId))
@@ -142,7 +144,7 @@ namespace Cookbook.Core.Services
                     Score = r.Score,
                     Ingredients = r.Ingredients,
                     Instructions = r.Instructions,
-                    
+
                 })
                 .FirstOrDefaultAsync();
 
@@ -201,6 +203,89 @@ namespace Cookbook.Core.Services
 
             comment.IsDeleted = true;
 
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task UpvoteRecipeAsync(string userId, string recipeId)
+        {
+            Recipe recipe = await GetRecipeByIdAsync(recipeId);
+
+            Rating rating = await repo.All<Rating>()
+                .Where(r => r.UserId == userId)
+                .Where(r => r.RecipeId == Guid.Parse(recipeId))
+                .FirstOrDefaultAsync();
+            if (rating == null)
+            {
+                rating = new Rating()
+                {
+                    RecipeId = Guid.Parse(recipeId),
+                    UserId = userId,
+                    Likes = true
+                };
+                recipe.Score++;
+                await repo.AddAsync(rating);
+            }
+            else
+            {
+                if (rating.Likes == null)
+                {
+                    recipe.Score++;
+                    rating.Likes = true;
+                }
+                else if (rating.Likes == false)
+                {
+                    recipe.Score += 2;
+                    rating.Likes = true;
+                }
+                else if (rating.Likes == true)
+                {
+                    recipe.Score--;
+                    rating.Likes = null;
+                }
+            }
+
+            await repo.SaveChangesAsync();
+
+        }     
+        
+        public async Task DownvoteRecipeAsync(string userId, string recipeId)
+        {
+            Recipe recipe = await GetRecipeByIdAsync(recipeId);
+
+            Rating rating = await repo.All<Rating>()
+                .Where(r => r.UserId == userId)
+                .Where(r => r.RecipeId == Guid.Parse(recipeId))
+                .FirstOrDefaultAsync();
+
+            if (rating == null)
+            {
+                rating = new Rating()
+                {
+                    RecipeId = Guid.Parse(recipeId),
+                    UserId = userId,
+                    Likes = false
+                };
+                recipe.Score--;
+                await repo.AddAsync(rating);
+            }
+            else
+            {
+                if (rating.Likes == null)
+                {
+                    recipe.Score--;
+                    rating.Likes = false;
+                }
+                else if (rating.Likes == true)
+                {
+                    recipe.Score -= 2;
+                    rating.Likes = false;
+                }
+                else if (rating.Likes == false)
+                {
+                    recipe.Score++;
+                    rating.Likes = null;
+                }
+            }
             await repo.SaveChangesAsync();
         }
     }

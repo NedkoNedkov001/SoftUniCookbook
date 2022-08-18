@@ -43,24 +43,46 @@ namespace Cookbook.Controllers
             return View(home);
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> Index(HomeViewModel model)
+        //{
+        //    var r = 0;
+        //    //return RedirectToAction("Index", model.Keyword);
+        //    return RedirectToAction("Index", "Recipes", new RouteValueDictionary { { "page", 1 }, { "keyword", model.Keyword } });
+        //}
+
         [HttpPost]
-        public async Task<IActionResult> Index(HomeViewModel model)
+        public async Task<IActionResult> Search(string keyword)
         {
-            return RedirectToAction("Index", model.Keyword);
+            return RedirectToAction("Index", "Recipes", new RouteValueDictionary { { "page", 1 }, { "keyword", keyword } });
         }
 
         public async Task<IActionResult> AddFavorite(string userId, string recipeId)
         {
             await userService.AddFavoriteAsync(userId, recipeId);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Recipes", new RouteValueDictionary { { "page", 1 } });
         }
 
         public async Task<IActionResult> RemoveFavorite(string userId, string recipeId)
         {
             await userService.RemoveFavoriteAsync(userId, recipeId);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Recipes", new RouteValueDictionary { { "page", 1 } });
+        }
+
+        public async Task<IActionResult> AddFavoriteOpen(string userId, string recipeId)
+        {
+            await userService.AddFavoriteAsync(userId, recipeId);
+
+            return RedirectToAction("Show", "Recipes", new RouteValueDictionary { { "recipeId", recipeId } });
+        }
+
+        public async Task<IActionResult> RemoveFavoriteOpen(string userId, string recipeId)
+        {
+            await userService.RemoveFavoriteAsync(userId, recipeId);
+
+            return RedirectToAction("Show", "Recipes", new RouteValueDictionary { { "recipeId", recipeId } });
         }
 
         public async Task<IActionResult> Add(string userId)
@@ -110,12 +132,12 @@ namespace Cookbook.Controllers
             {
                 TempData[MessageConstant.ErrorMessage] = "Could not delete recipe".ToArray();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Recipes", new RouteValueDictionary { { "page", 1 } });
         }
 
         public async Task<IActionResult> Show(string recipeId)
         {
-            UserViewModel user = await userService.GetUserForViewByUsernameAsync(User.Identity.Name);
+            UserOnRecipeShowViewModel user = await userService.GetUserForRecipeShowByUsernameAsync(User.Identity.Name, recipeId);
             RecipeViewModel recipe = await recipeService.GetRecipeForViewByIdAsync(recipeId, user);
 
             return View(recipe);
@@ -136,6 +158,19 @@ namespace Cookbook.Controllers
             string text = Request.Form["NewComment.Text"];
 
             await recipeService.AddCommentAsync(userId, recipeId, text);
+
+            return RedirectToAction("show", "recipes", new RouteValueDictionary { { "recipeId", recipeId } });
+        }
+
+        public async Task<IActionResult> Upvote(string userId, string recipeId)
+        {
+            await recipeService.UpvoteRecipeAsync(userId, recipeId);
+
+            return RedirectToAction("show", "recipes", new RouteValueDictionary { { "recipeId", recipeId } });
+        }
+        public async Task<IActionResult> Downvote(string userId, string recipeId)
+        {
+            await recipeService.DownvoteRecipeAsync(userId, recipeId);
 
             return RedirectToAction("show", "recipes", new RouteValueDictionary { { "recipeId", recipeId } });
         }

@@ -22,7 +22,6 @@ namespace Cookbook.Core.Services
             this.repo = repo;
             this.recipeService = recipeService;
         }
-
         public async Task<IEnumerable<UserListViewModel>> GetUsersAsync()
         {
             return await repo.All<ApplicationUser>()
@@ -37,7 +36,6 @@ namespace Cookbook.Core.Services
                 })
                 .ToListAsync();
         }
-
         public async Task<ApplicationUser> GetUserByUsernameAsync(string username)
         {
             var user = await repo.All<ApplicationUser>()
@@ -61,7 +59,8 @@ namespace Cookbook.Core.Services
                     Username = user.UserName,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
-                    Picture = user.Picture
+                    Picture = user.Picture,
+                    Favorites = await GetUserFavoritesAsync(user.Id)
                 };
                 return userView;
             }
@@ -89,8 +88,6 @@ namespace Cookbook.Core.Services
                 return null;
             }
         }
-
-
         public async Task<ApplicationUser> GetUserByIdAsync(string id)
         {
             var user = await repo.All<ApplicationUser>()
@@ -104,7 +101,6 @@ namespace Cookbook.Core.Services
 
             return user;
         }
-
         public async Task<UserEditViewModel> GetUserForEditByIdAsync(string id)
         {
             try
@@ -126,7 +122,6 @@ namespace Cookbook.Core.Services
                 return null;
             }
         }
-
         public async Task<ApplicationUser> GetUserByEmailAsync(string email)
         {
             var user = await repo.All<ApplicationUser>()
@@ -140,7 +135,6 @@ namespace Cookbook.Core.Services
 
             return user;
         }
-
         public async Task<UserViewModel> GetUserForViewByEmailAsync(string email)
         {
             try
@@ -162,7 +156,6 @@ namespace Cookbook.Core.Services
                 return null;
             }
         }
-
         public async Task<IEnumerable<string>> UpdateUserAsync(UserEditViewModel model)
         {
             var errors = new HashSet<string>();
@@ -211,7 +204,6 @@ namespace Cookbook.Core.Services
 
             return errors;
         }
-
         public async Task<bool> DeleteUserAsync(string id)
         {
             var user = await repo.GetByIdAsync<ApplicationUser>(id);
@@ -220,15 +212,14 @@ namespace Cookbook.Core.Services
             await repo.SaveChangesAsync();
             return (user != null);
         }
-
-        public async Task<ICollection<Recipe>> GetUserFavoritesAsync(string id)
+        public async Task<ICollection<Guid>> GetUserFavoritesAsync(string id)
         {
             return await repo.All<UserFavorite>()
                 .Where(uf => uf.UserId == id)
                 .Select(uf => uf.Recipe)
+                .Select(r => r.Id)
                 .ToListAsync();
         }
-
         public async Task<bool> AddFavoriteAsync(string userId, string recipeId)
         {
             var user = await repo.GetByIdAsync<ApplicationUser>(userId);
@@ -250,7 +241,6 @@ namespace Cookbook.Core.Services
                 return false;
             }
         }
-
         public async Task<bool> RemoveFavoriteAsync(string userId, string recipeId)
         {
             var recipeToRemove = await repo.All<UserFavorite>()
@@ -267,7 +257,6 @@ namespace Cookbook.Core.Services
 
             return false;
         }
-
         public async Task<DetailedUserViewModel> GetDetailedUserByUsernameAsync(string username)
         {
             return await repo.All<ApplicationUser>()
@@ -283,7 +272,6 @@ namespace Cookbook.Core.Services
                 })
                 .FirstOrDefaultAsync();
         }
-
         public async Task<UserEditViewModel> GetUserForEditByUsernameAsync(string username)
         {
             return await repo.All<ApplicationUser>()
@@ -297,6 +285,29 @@ namespace Cookbook.Core.Services
                     Picture = u.Picture,
                     About = u.About,
                 })
+                .FirstOrDefaultAsync();
+        }
+        public async Task<UserOnRecipeShowViewModel> GetUserForRecipeShowByUsernameAsync(string username, string recipeId)
+        {
+            UserOnRecipeShowViewModel user = await repo.All<ApplicationUser>()
+                .Where(u => u.NormalizedUserName == username.ToUpper())
+                .Select(u => new UserOnRecipeShowViewModel()
+                {
+                    Id = u.Id,
+                })
+                .FirstOrDefaultAsync();
+
+            user.Favorites = await GetUserFavoritesAsync(user.Id);
+            user.LikedRecipe = await UserLikedRecipeAsync(user.Id, recipeId);
+
+            return user;
+        }
+        private async Task<bool?> UserLikedRecipeAsync(string userId, string recipeId)
+        {
+            return await repo.All<Rating>()
+                .Where(r => r.UserId == userId)
+                .Where(r => r.RecipeId == Guid.Parse(recipeId))
+                .Select(r => r.Likes)
                 .FirstOrDefaultAsync();
         }
     }
